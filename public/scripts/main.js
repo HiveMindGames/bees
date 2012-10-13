@@ -1,18 +1,15 @@
 (function() {
-  var canvasEl, context, height, width;
+  var bee, helper, world;
 
-  width = window.innerWidth, height = window.innerHeight;
+  helper = new CanvasHelper(document.getElementById('game'));
 
-  console.warn(width, height);
+  world = new World();
 
-  canvasEl = document.getElementById('game');
+  bee = new Bee();
 
-  canvasEl.width = width;
-
-  canvasEl.height = height;
-
-  context = canvasEl.getContext('2d');
-
-  context.fillRect(10, 20, 200, 100);
+  helper.render(function() {
+    world.render(helper);
+    return bee.render(helper);
+  });
 
 }).call(this);

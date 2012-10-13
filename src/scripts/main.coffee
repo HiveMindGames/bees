@@ -1,9 +1,7 @@
-{ innerWidth: width, innerHeight: height } = window
+helper = new CanvasHelper(document.getElementById('game'))
+world = new World()
+bee = new Bee()
 
-console.warn width, height
-canvasEl = document.getElementById('game')
-canvasEl.width = width
-canvasEl.height = height
-
-context = canvasEl.getContext('2d')
-context.fillRect(10, 20, 200, 100)
+helper.render ->
+  world.render(helper)
+  bee.render(helper)
