@@ -124,6 +124,7 @@
     };
 
     CanvasHelper.prototype.rect = function(x, y, width, height) {
+      var half_height, half_width;
       if (x == null) {
         x = 0;
       }
@@ -136,11 +137,13 @@
       if (height == null) {
         height = this.height;
       }
+      half_width = width / 2;
+      half_height = height / 2;
       if (this.should_fill) {
-        this.context.fillRect(x, y, width, height);
+        this.context.fillRect(x - half_width, y - half_height, width, height);
       }
       if (this.should_stroke) {
-        return this.context.strokeRect(x, y, width, height);
+        return this.context.strokeRect(x - half_width, y - half_height, width, height);
       }
     };
 

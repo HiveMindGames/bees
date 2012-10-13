@@ -50,8 +50,12 @@ class window.CanvasHelper
     @context.fillText(line, x, y + i * lineHeight) for i, line of lines
 
   rect: (x=0, y=0, width=@width, height=@height) ->
-    @context.fillRect(x, y, width, height) if @should_fill
-    @context.strokeRect(x, y, width, height) if @should_stroke
+    half_width = width / 2
+    half_height = height / 2
+    if @should_fill
+      @context.fillRect(x - half_width, y - half_height, width, height)
+    if @should_stroke
+      @context.strokeRect(x - half_width, y - half_height, width, height)
 
   clear: (x=0, y=0, width=@width, height=@height) ->
     @context.clearRect(x, y, @width, @height)
