@@ -1,5 +1,6 @@
 class window.World
   constructor: (@helper, @options) ->
+    @background = new Background(@options.backgrounds)
     @bee = new Bee(@options.bee)
     @flowers = (new Flower(option) for option in @options.flowers)
     @current_flower = @flowers[0]
@@ -8,6 +9,14 @@ class window.World
     init_mouse = new SAT.Vector()
     is_dragging = false
     mouse_dx = null
+
+    $(window).on 'keydown', (e) =>
+      for background in @options.backgrounds
+        console.warn background
+        if (background.x + background.increment) < (background.width - background.imcrement)
+          background.x += background.increment
+        else
+          background.x = 0
 
     $(@helper.canvas).on 'mousedown', (e) =>
       init_mouse.x = mouse.x = e.clientX
@@ -54,6 +63,8 @@ class window.World
       @bee.velocity.add(offset)
 
   render: (helper) ->
+    @update()
+
+    @background.render(helper)
     _.invoke(@flowers, 'render', helper)
     @bee.render(helper)
-    @update()

@@ -7,6 +7,7 @@
         _this = this;
       this.helper = helper;
       this.options = options;
+      this.background = new Background(this.options.backgrounds);
       this.bee = new Bee(this.options.bee);
       this.flowers = (function() {
         var _i, _len, _ref, _results;
@@ -23,6 +24,20 @@
       init_mouse = new SAT.Vector();
       is_dragging = false;
       mouse_dx = null;
+      $(window).on('keydown', function(e) {
+        var background, _i, _len, _ref, _results;
+        _ref = _this.options.backgrounds;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          background = _ref[_i];
+          if ((background.x + background.increment) < (background.width - background.imcrement)) {
+            _results.push(background.x += background.increment);
+          } else {
+            _results.push(background.x = 0);
+          }
+        }
+        return _results;
+      });
       $(this.helper.canvas).on('mousedown', function(e) {
         init_mouse.x = mouse.x = e.clientX;
         init_mouse.y = mouse.y = e.clientY;
@@ -76,9 +91,10 @@
     };
 
     World.prototype.render = function(helper) {
+      this.update();
+      this.background.render(helper);
       _.invoke(this.flowers, 'render', helper);
-      this.bee.render(helper);
-      return this.update();
+      return this.bee.render(helper);
     };
 
     return World;
