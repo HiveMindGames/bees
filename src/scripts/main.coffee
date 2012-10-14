@@ -155,6 +155,9 @@ world = new World(helper, {
   targets: targets,
   obstacles: [
     new SAT.Box(new SAT.Vector(helper.half_width, helper.half_height), 70, 70).toPolygon()
+
+    new SAT.Box(new SAT.Vector(helper.half_width + 300, helper.half_height - 150), 70, 70).toPolygon()
+    new SAT.Box(new SAT.Vector(helper.half_width + 300, helper.half_height), 70, 70).toPolygon()
   ]
 })
 
