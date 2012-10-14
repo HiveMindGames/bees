@@ -115,7 +115,7 @@
       _ref = this.background.backgrounds;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         background = _ref[_i];
-        background.x += (this.bee.last_position.x - this.bee.position.x) * background.increment;
+        background.x = -this.camera.x * (background.increment / 10);
         if (background.x < 0) {
           background.x += background.width;
         } else if (background.x + background.width > helper.width) {

@@ -84,7 +84,7 @@ class window.World
     return unless @bee.is_flying
 
     for background in @background.backgrounds
-      background.x += (@bee.last_position.x - @bee.position.x) * background.increment
+      background.x = -@camera.x * (background.increment / 10)
 
       if background.x < 0
         background.x += background.width
