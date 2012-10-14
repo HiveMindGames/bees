@@ -94,3 +94,9 @@ class window.Bee
       helper.restore()
 
     helper.restore()
+
+    # Draw Bounding box
+    #helper.save()
+    #helper.translate(@position.x - @half_width, @position.y - @half_height)
+    #helper.polygon(@bounding_box.points)
+    #helper.restore()

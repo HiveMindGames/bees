@@ -66,6 +66,13 @@
         _this.current_target.drag_dx = mouse_dx;
         return _this.bee.drag_dx = mouse_dx;
       });
+      $(this.helper.canvas).on('mouseleave', function(e) {
+        _this.is_dragging = false;
+        _this.current_target.drag_position = null;
+        _this.current_target.drag_dx = null;
+        _this.bee.drag_dx = null;
+        return _this.bee.distance = 0;
+      });
     }
 
     World.prototype.reset_game = function() {
@@ -158,10 +165,15 @@
           });
         }
         if (this.bee.distance > 30) {
-          this.bee.is_flying = false;
           offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
-          this.bee.position.add(offset);
-          this.bee.velocity = new SAT.Vector();
+          if (this.current_target.is_back_normal(offset)) {
+            this.bee.position.add(offset);
+            this.bee.velocity.reflectN(collision_response.overlapN.perp()).scale(this.bounce_factor);
+          } else {
+            this.bee.is_flying = false;
+            this.bee.position.add(offset);
+            this.bee.velocity = new SAT.Vector();
+          }
         } else {
           this.bee.distance = 0;
         }
