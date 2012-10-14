@@ -12,8 +12,11 @@
 
     Bee.prototype.gravity = new SAT.Vector(0, 1);
 
-    function Bee(position) {
-      this.position = position != null ? position : new SAT.Vector();
+    function Bee(options) {
+      var x, y, _ref;
+      this.options = options;
+      _ref = this.options, x = _ref.x, y = _ref.y;
+      this.position = new SAT.Vector(x, y);
       this.half_size = this.size / 2;
       this.velocity = new SAT.Vector();
       this.acceleration = new SAT.Vector();

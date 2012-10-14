@@ -32,6 +32,7 @@ class window.Flower
     helper.rotate(@angle)
     helper.rect(0, -@half_stem_height, @stem_thickness, @stem_height)
 
+    # petal
     helper.fill('#ee0')
     helper.translate(0, -@stem_height)
     helper.rect(0, 0, @petal_width, @petal_height)

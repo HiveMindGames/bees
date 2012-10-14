@@ -7,7 +7,9 @@ class window.Bee
 
   gravity: new SAT.Vector(0, 1)
 
-  constructor: (@position=new SAT.Vector()) ->
+  constructor: (@options) ->
+    { x, y } = @options
+    @position = new SAT.Vector(x, y)
     @half_size = @size / 2
 
     @velocity = new SAT.Vector()
