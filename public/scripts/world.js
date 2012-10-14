@@ -17,6 +17,10 @@
       mouse = new SAT.Vector();
       init_mouse = new SAT.Vector();
       mouse_dx = null;
+      $('#replay').on('click', function(e) {
+        e.preventDefault();
+        return _this.reset_game();
+      });
       $(this.helper.canvas).on('mousedown', function(e) {
         if (!_this.current_flower) {
           return;

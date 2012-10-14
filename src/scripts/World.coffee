@@ -11,6 +11,10 @@ class window.World
     init_mouse = new SAT.Vector()
     mouse_dx = null
 
+    $('#replay').on 'click', (e) =>
+      e.preventDefault()
+      @reset_game()
+
     $(@helper.canvas).on 'mousedown', (e) =>
       return unless @current_flower
 
