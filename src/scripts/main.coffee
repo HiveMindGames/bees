@@ -51,6 +51,18 @@ soundManager.setup
       autoLoad: true
       autoPlay: false
       volume: 50
+    soundManager.createSound
+      id: 'collision'
+      url: './sounds/collision.mp3'
+      autoLoad: true
+      autoPlay: false
+      volume: 50
+    soundManager.createSound
+      id: 'thoughtbubble'
+      url: './sounds/thoughtbubble.mp3'
+      autoLoad: true
+      autoPlay: false
+      volume: 50
 
 helper = new CanvasHelper(document.getElementById('game'))
 

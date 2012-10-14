@@ -80,6 +80,7 @@
       }
       this.bee = new Bee(this.options.bee);
       this.bee.thinking = 'hive';
+      soundManager.play('thoughtbubble');
       this.targets = _.map(this.options.targets, function(options) {
         return new Flower(options);
       });
@@ -144,8 +145,9 @@
           }
         }
         this.current_target.hit = true;
+        this.bee.thinking = 'points';
+        soundManager.play('thoughtbubble');
         if (this.current_target.final) {
-          this.bee.thinking = 'points';
           this.bee.points += this.bee.lives * 100;
           soundManager.stop('background');
           soundManager.play('victory', {
@@ -154,8 +156,6 @@
               return _this.reset_game();
             }
           });
-        } else {
-          this.bee.thinking = 'points';
         }
         if (this.bee.distance > 30) {
           this.bee.is_flying = false;
@@ -170,7 +170,7 @@
         return SAT.testPolygonPolygon(_this.bee.bounding_box, obstacle.poly, collision_response = new SAT.Response());
       });
       if (current_obstacle) {
-        soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
+        soundManager.play('collision');
         offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
         this.bee.position.add(offset);
         this.bee.velocity.reflectN(collision_response.overlapN.perp()).scale(this.bounce_factor);

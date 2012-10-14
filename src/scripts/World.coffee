@@ -63,6 +63,7 @@ class window.World
 
     @bee = new Bee(@options.bee)
     @bee.thinking = 'hive'
+    soundManager.play('thoughtbubble')
     @targets = _.map @options.targets, (options) ->
       return new Flower(options)
     @current_target = @targets[0]
@@ -113,9 +114,10 @@ class window.World
           @bee.points += 50
 
       @current_target.hit = true
+      @bee.thinking = 'points'
+      soundManager.play('thoughtbubble')
 
       if @current_target.final
-        @bee.thinking = 'points'
         @bee.points += @bee.lives * 100
         soundManager.stop('background')
         soundManager.play('victory', {
@@ -123,8 +125,6 @@ class window.World
             soundManager.play('background')
             @reset_game()
         })
-      else
-        @bee.thinking = 'points'
 
       if @bee.distance > 30
         @bee.is_flying = false
@@ -142,7 +142,7 @@ class window.World
       )
 
     if current_obstacle
-      soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
+      soundManager.play('collision')
       offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse()
       @bee.position.add(offset)
       @bee.velocity.reflectN(collision_response.overlapN.perp()).scale(@bounce_factor)

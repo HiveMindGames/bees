@@ -55,9 +55,23 @@
         autoPlay: false,
         volume: 50
       });
-      return soundManager.createSound({
+      soundManager.createSound({
         id: 'victory',
         url: './sounds/victory.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 50
+      });
+      soundManager.createSound({
+        id: 'collision',
+        url: './sounds/collision.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 50
+      });
+      return soundManager.createSound({
+        id: 'thoughtbubble',
+        url: './sounds/thoughtbubble.mp3',
         autoLoad: true,
         autoPlay: false,
         volume: 50
