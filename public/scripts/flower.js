@@ -16,28 +16,10 @@
     }
 
     Flower.prototype.contains = function(mouse) {
-      var i, inside, intersect, length, max, points, x, xi, xj, y, yi, yj;
+      var position, x, y;
       x = mouse.x, y = mouse.y;
-      inside = false;
-      points = this.bounding_box.points;
-      length = points.length;
-      max = length - 2;
-      i = 0;
-      while (i < length) {
-        xi = points[i].x;
-        yi = points[i].y;
-        xj = points[max].x;
-        yj = points[max].y;
-        console.warn(xi, yi, xj, yj);
-        intersect = (((yi > y && y !== yj) && yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-        console.warn('intersect', intersect);
-        if (intersect) {
-          inside = !inside;
-        }
-        max = i++;
-      }
-      console.warn('inside', inside);
-      return inside;
+      position = this.bounding_box.pos;
+      return x > (position.x - this.half_petal_width) && x < (position.x + this.half_petal_width) && y > (position.y - this.half_petal_height) && y < (position.y + this.half_petal_height);
     };
 
     Flower.prototype.update_bounding_box = function() {
