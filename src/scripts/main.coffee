@@ -52,6 +52,12 @@ soundManager.setup
       autoPlay: false
       volume: 50
     soundManager.createSound
+      id: 'landing'
+      url: './sounds/landing.mp3'
+      autoLoad: true
+      autoPlay: false
+      volume: 80
+    soundManager.createSound
       id: 'collision'
       url: './sounds/collision.mp3'
       autoLoad: true
@@ -70,15 +76,34 @@ targets = []
 target_count = 4
 
 for i in [0..target_count]
-  targets.push({
-    src: 'images/petals.png',
-    width: 128,
-    height: 64,
-    position: new SAT.Vector(((helper.half_width / 2) * i) + 200, helper.height),
-    stem_height: helper.half_height / 2,
-    angle: if i is 0 then 10 else Math.floor(15 - (Math.random() * 30))
-    final: i is target_count
-  })
+  if i is target_count
+    targets.push({
+      src: 'images/hive.png',
+      width: 190,
+      height: 245,
+      position: new SAT.Vector(((helper.half_width / 2) * i) + 200, helper.height),
+      stem_height: helper.half_height / 2,
+      angle: 0,
+      final: true
+    })
+  else if i is 0
+    targets.push({
+      src: 'images/petals.png',
+      width: 128,
+      height: 64,
+      position: new SAT.Vector(((helper.half_width / 2) * i) + 200, helper.height),
+      stem_height: helper.half_height / 2,
+      angle: 10
+    })
+  else
+    targets.push({
+      src: 'images/petals.png',
+      width: 128,
+      height: 64,
+      position: new SAT.Vector(((helper.half_width / 2) * i) + 200, helper.height),
+      stem_height: helper.half_height / 2,
+      angle: Math.floor(15 - (Math.random() * 30))
+    })
 
 world = new World(helper, {
   width: helper.width * 2,
@@ -129,7 +154,7 @@ world = new World(helper, {
   }],
   targets: targets,
   obstacles: [
-    # new SAT.Box(new SAT.Vector(10, 10), 30, 200).toPolygon()
+    new SAT.Box(new SAT.Vector(helper.half_width, helper.half_height), 70, 70).toPolygon()
   ]
 })
 

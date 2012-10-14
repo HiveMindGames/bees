@@ -39,7 +39,6 @@
         if (!_this.is_dragging) {
           return;
         }
-        soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
         soundManager.play('buzz', {
           loops: 3
         });
@@ -108,7 +107,8 @@
     };
 
     World.prototype.update = function(helper) {
-      var background, _i, _len, _ref;
+      var background, _i, _len, _ref,
+        _this = this;
       if (!this.bee.is_flying) {
         return;
       }
@@ -123,6 +123,11 @@
         }
       }
       if (this.bee.position.y > this.options.height) {
+        soundManager.play('collision');
+        this.smoke = new Smoke((new SAT.Vector()).copy(this.bee.position));
+        setTimeout(function() {
+          return _this.smoke = null;
+        }, 1000);
         return this.reset_game();
       }
     };
@@ -145,7 +150,7 @@
         return has_collided;
       });
       if (this.current_target) {
-        soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
+        soundManager.play('landing');
         soundManager.stop('buzz');
         if (!this.current_target.hit) {
           if (this.current_target.final) {
@@ -188,7 +193,7 @@
         return SAT.testPolygonPolygon(_this.bee.bounding_box, obstacle.poly, collision_response = new SAT.Response());
       });
       if (current_obstacle) {
-        soundManager.play('collision');
+        soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
         offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
         this.collision = new Collision((new SAT.Vector()).copy(this.bee.position));
         setTimeout(function() {
@@ -226,8 +231,14 @@
       if (this.collision) {
         this.collision.render(helper);
       }
+      if (this.smoke) {
+        this.smoke.render(helper);
+      }
       this.helper.restore();
-      helper.fill('#fff');
+      helper.fill('rgb(144, 124, 58)');
+      helper.text("points: " + this.bee.points, 32, helper.height - 60, font = '28px "Sniglet", cursive', null, 'left', 'middle');
+      helper.text("lives: " + this.bee.lives, 32, helper.height - 28, font = '28px "Sniglet", cursive', null, 'left', 'middle');
+      helper.fill('white');
       helper.text("points: " + this.bee.points, 32, helper.height - 64, font = '28px "Sniglet", cursive', null, 'left', 'middle');
       return helper.text("lives: " + this.bee.lives, 32, helper.height - 32, font = '28px "Sniglet", cursive', null, 'left', 'middle');
     };

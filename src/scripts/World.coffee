@@ -30,7 +30,6 @@ class window.World
     $(@helper.canvas).on 'mouseup', (e) =>
       return unless @is_dragging
 
-      soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
       soundManager.play('buzz', loops: 3)
       soundManager.stop('stretch')
       soundManager.play('spring')
@@ -93,6 +92,11 @@ class window.World
         background.x -= background.width
 
     if @bee.position.y > @options.height
+      soundManager.play('collision')
+      @smoke = new Smoke((new SAT.Vector()).copy(@bee.position))
+      setTimeout =>
+        @smoke = null
+      , 1000
       @reset_game()
 
   simulate: (dt) ->
@@ -116,7 +120,7 @@ class window.World
       return has_collided
 
     if @current_target
-      soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
+      soundManager.play('landing')
       soundManager.stop('buzz')
 
       unless @current_target.hit
@@ -161,7 +165,7 @@ class window.World
       )
 
     if current_obstacle
-      soundManager.play('collision')
+      soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
       offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse()
       @collision = new Collision((new SAT.Vector()).copy(@bee.position))
       setTimeout =>
@@ -197,9 +201,13 @@ class window.World
     _.invoke(@obstacles, 'render', helper)
     @bee.render(helper)
     @collision.render(helper) if @collision
+    @smoke.render(helper) if @smoke
     @helper.restore()
 
-    helper.fill('#fff')
+    helper.fill('rgb(144, 124, 58)')
+    helper.text("points: #{@bee.points}", 32, helper.height - 60, font='28px "Sniglet", cursive', null, 'left', 'middle')
+    helper.text("lives: #{@bee.lives}", 32, helper.height - 28, font='28px "Sniglet", cursive', null, 'left', 'middle')
+    helper.fill('white')
     helper.text("points: #{@bee.points}", 32, helper.height - 64, font='28px "Sniglet", cursive', null, 'left', 'middle')
     helper.text("lives: #{@bee.lives}", 32, helper.height - 32, font='28px "Sniglet", cursive', null, 'left', 'middle')
 
