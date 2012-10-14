@@ -9,6 +9,11 @@ class window.Background
     scale = helper.height / height
     height = helper.height
     width *= scale
+
+    width = Math.floor width
+    height = Math.floor height
+    x = Math.floor x
+    y = Math.floor y
     helper.render_image(image, x - width, y, width, height)
     helper.render_image(image, x, y, width, height)
     helper.render_image(image, x + width, y, width, height)
