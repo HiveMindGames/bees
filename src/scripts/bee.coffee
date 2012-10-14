@@ -39,5 +39,7 @@ class window.Bee
     helper.fill('#000')
     helper.save()
     helper.translate(@position.x, @position.y)
+    if @drag_dx
+      helper.translate(@drag_dx.x, @drag_dx.y)
     helper.rect(0, 0, @size, @size)
     helper.restore()   

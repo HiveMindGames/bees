@@ -43,6 +43,9 @@
       helper.fill('#000');
       helper.save();
       helper.translate(this.position.x, this.position.y);
+      if (this.drag_dx) {
+        helper.translate(this.drag_dx.x, this.drag_dx.y);
+      }
       helper.rect(0, 0, this.size, this.size);
       return helper.restore();
     };

@@ -4,8 +4,8 @@ class window.World
     @flowers = (new Flower(option) for option in @options.flowers)
     @current_flower = @flowers[0]
 
-    init_mouse = new SAT.Vector()
     mouse = new SAT.Vector()
+    init_mouse = new SAT.Vector()
     is_dragging = false
     mouse_dx = null
 
@@ -18,14 +18,19 @@ class window.World
       return unless is_dragging
       is_dragging = false
       @bee.is_flying = true
-      @bee.acceleration.sub(mouse_dx)
+      @current_flower.drag_position = null
+      @current_flower.drag_dx = null
+      @bee.drag_dx = null
+      @bee.acceleration.sub(mouse_dx) if mouse_dx
 
     $(@helper.canvas).on 'mousemove', (e) =>
       return unless is_dragging
       mouse.x = e.clientX
       mouse.y = e.clientY
       mouse_dx = new SAT.Vector().copy(mouse).sub(init_mouse)
-      @current_flower.update_bounding_box(mouse)
+      @current_flower.drag_position = mouse
+      @current_flower.drag_dx = mouse_dx
+      @bee.drag_dx = mouse_dx
 
   update: ->
     return unless @bee.is_flying

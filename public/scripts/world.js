@@ -19,8 +19,8 @@
         return _results;
       }).call(this);
       this.current_flower = this.flowers[0];
-      init_mouse = new SAT.Vector();
       mouse = new SAT.Vector();
+      init_mouse = new SAT.Vector();
       is_dragging = false;
       mouse_dx = null;
       $(this.helper.canvas).on('mousedown', function(e) {
@@ -34,7 +34,12 @@
         }
         is_dragging = false;
         _this.bee.is_flying = true;
-        return _this.bee.acceleration.sub(mouse_dx);
+        _this.current_flower.drag_position = null;
+        _this.current_flower.drag_dx = null;
+        _this.bee.drag_dx = null;
+        if (mouse_dx) {
+          return _this.bee.acceleration.sub(mouse_dx);
+        }
       });
       $(this.helper.canvas).on('mousemove', function(e) {
         if (!is_dragging) {
@@ -43,7 +48,9 @@
         mouse.x = e.clientX;
         mouse.y = e.clientY;
         mouse_dx = new SAT.Vector().copy(mouse).sub(init_mouse);
-        return _this.current_flower.update_bounding_box(mouse);
+        _this.current_flower.drag_position = mouse;
+        _this.current_flower.drag_dx = mouse_dx;
+        return _this.bee.drag_dx = mouse_dx;
       });
     }
 
