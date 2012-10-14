@@ -1,5 +1,5 @@
 (function() {
-  var helper, world;
+  var helper, i, target_count, targets, world, _i;
 
   soundManager.setup({
     url: './swf/',
@@ -81,13 +81,29 @@
 
   helper = new CanvasHelper(document.getElementById('game'));
 
+  targets = [];
+
+  target_count = 4;
+
+  for (i = _i = 0; 0 <= target_count ? _i <= target_count : _i >= target_count; i = 0 <= target_count ? ++_i : --_i) {
+    targets.push({
+      src: 'images/petals.png',
+      width: 128,
+      height: 64,
+      position: new SAT.Vector((helper.half_width * i) + 200, helper.height),
+      stem_height: 220,
+      angle: i === 0 ? 10 : Math.floor(25 - (Math.random() * 50)),
+      final: i === target_count
+    });
+  }
+
   world = new World(helper, {
     width: helper.width * 2,
     height: helper.height,
     bee: {
       src: 'images/bee.png',
-      x: 264,
-      y: helper.height - 260,
+      x: 248,
+      y: helper.height - 272,
       width: 64,
       height: 74
     },
@@ -130,39 +146,8 @@
         increment: 4
       }
     ],
-    targets: [
-      {
-        src: 'images/petals.png',
-        width: 128,
-        height: 64,
-        position: new SAT.Vector(200, helper.height),
-        stem_height: 220,
-        angle: 15
-      }, {
-        src: 'images/petals.png',
-        width: 128,
-        height: 64,
-        position: new SAT.Vector(helper.half_width - 200, helper.height),
-        stem_height: 230,
-        angle: 5
-      }, {
-        src: 'images/petals.png',
-        width: 128,
-        height: 64,
-        position: new SAT.Vector(helper.half_width + 150, helper.height),
-        stem_height: 200,
-        angle: -15
-      }, {
-        src: 'images/petals.png',
-        width: 128,
-        height: 64,
-        position: new SAT.Vector(helper.half_width + 450, helper.height),
-        stem_height: 240,
-        angle: -25,
-        final: true
-      }
-    ],
-    obstacles: [new SAT.Box(new SAT.Vector(10, 10), 30, 200).toPolygon(), new SAT.Box(new SAT.Vector(helper.half_width + 450, 10), 300, 30).toPolygon(), new SAT.Box(new SAT.Vector(helper.half_width + 450, 200), 300, 30).toPolygon(), new SAT.Box(new SAT.Vector(helper.half_width + 700, 10), 30, 200).toPolygon()]
+    targets: targets,
+    obstacles: []
   });
 
   helper.render(function(delta) {

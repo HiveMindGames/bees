@@ -66,88 +66,70 @@ soundManager.setup
 
 helper = new CanvasHelper(document.getElementById('game'))
 
+targets = []
+target_count = 4
+
+for i in [0..target_count]
+  targets.push({
+    src: 'images/petals.png',
+    width: 128,
+    height: 64,
+    position: new SAT.Vector((helper.half_width * i) + 200, helper.height),
+    stem_height: 220,
+    angle: if i is 0 then 10 else Math.floor(25 - (Math.random() * 50))
+    final: i is target_count
+  })
+
 world = new World(helper, {
   width: helper.width * 2,
   height: helper.height
   bee: {
     src: 'images/bee.png',
-    x: 264,
-    y: helper.height - 260
+    x: 248,
+    y: helper.height - 272
     width: 64
     height: 74
   },
   backgrounds: [{
-    src: 'images/sky.png',
-    width: 12,
-    height: 800,
-    x: 0,
-    y: 0,
-    repeat: true,
-    increment: 0
-  }, {
-    src: 'images/clouds.png',
-    width: 1060,
-    height: 550,
-    x: 0,
-    y: 0,
-    increment: 1
-  }, {
-    src: 'images/mountains.png',
-    width: 1060,
-    height: 250,
-    x: 0,
-    y: 0,
-    increment: 2
-  }, {
-    src: 'images/hills.png',
-    width: 1060,
-    height: 180,
-    x: 0,
-    y: 0,
-    increment: 3
-  }, {
-    src: 'images/trees.png',
-    width: 1060,
-    height: 180,
-    x: 0,
-    y: 0,
-    increment: 4
+      src: 'images/sky.png',
+      width: 12,
+      height: 800,
+      x: 0,
+      y: 0,
+      repeat: true,
+      increment: 0
+    }, {
+      src: 'images/clouds.png',
+      width: 1060,
+      height: 550,
+      x: 0,
+      y: 0,
+      increment: 1
+    }, {
+      src: 'images/mountains.png',
+      width: 1060,
+      height: 250,
+      x: 0,
+      y: 0,
+      increment: 2
+    }, {
+      src: 'images/hills.png',
+      width: 1060,
+      height: 180,
+      x: 0,
+      y: 0,
+      increment: 3
+    }, {
+      src: 'images/trees.png',
+      width: 1060,
+      height: 180,
+      x: 0,
+      y: 0,
+      increment: 4
   }],
-  targets: [{
-    src: 'images/petals.png',
-    width: 128,
-    height: 64,
-    position: new SAT.Vector(200, helper.height),
-    stem_height: 220,
-    angle: 15
-  }, {
-    src: 'images/petals.png',
-    width: 128,
-    height: 64,
-    position: new SAT.Vector(helper.half_width - 200, helper.height),
-    stem_height: 230,
-    angle: 5
-  }, {
-    src: 'images/petals.png',
-    width: 128,
-    height: 64,
-    position: new SAT.Vector(helper.half_width + 150, helper.height),
-    stem_height: 200,
-    angle: -15
-  }, {
-    src: 'images/petals.png',
-    width: 128,
-    height: 64,
-    position: new SAT.Vector(helper.half_width + 450, helper.height),
-    stem_height: 240,
-    angle: -25,
-    final: true
-  }],
+  targets: targets,
   obstacles: [
-    new SAT.Box(new SAT.Vector(10, 10), 30, 200).toPolygon()
-    new SAT.Box(new SAT.Vector(helper.half_width + 450, 10), 300, 30).toPolygon()
-    new SAT.Box(new SAT.Vector(helper.half_width + 450, 200), 300, 30).toPolygon()
-    new SAT.Box(new SAT.Vector(helper.half_width + 700, 10), 30, 200).toPolygon()
+    # new SAT.Box(new SAT.Vector(10, 10), 30, 200).toPolygon()
   ]
 })
 
