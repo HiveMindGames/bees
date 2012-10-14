@@ -65,6 +65,13 @@
         _this.current_target.drag_dx = mouse_dx;
         return _this.bee.drag_dx = mouse_dx;
       });
+      $(this.helper.canvas).on('mouseleave', function(e) {
+        _this.is_dragging = false;
+        _this.current_target.drag_position = null;
+        _this.current_target.drag_dx = null;
+        _this.bee.drag_dx = null;
+        return _this.bee.distance = 0;
+      });
     }
 
     World.prototype.reset_game = function() {

@@ -52,6 +52,13 @@ class window.World
       @current_target.drag_dx = mouse_dx
       @bee.drag_dx = mouse_dx
 
+    $(@helper.canvas).on 'mouseleave', (e) =>
+      @is_dragging = false
+      @current_target.drag_position = null
+      @current_target.drag_dx = null
+      @bee.drag_dx = null
+      @bee.distance = 0
+
   reset_game: ->
     soundManager.stop('buzz')
     @accumulator = 0
