@@ -1,6 +1,7 @@
 class window.World
   is_dragging: false
   bounce_factor: 0.9
+  camera: new SAT.Vector()
 
   constructor: (@helper, @options) ->
     @background = new CompositeBackground(@options.backgrounds)
@@ -14,8 +15,8 @@ class window.World
     $(@helper.canvas).on 'mousedown', (e) =>
       return unless @current_flower
 
-      init_mouse.x = mouse.x = e.clientX
-      init_mouse.y = mouse.y = e.clientY
+      init_mouse.x = mouse.x = e.clientX + @camera.x
+      init_mouse.y = mouse.y = e.clientY + @camera.y
       @is_dragging = @current_flower.contains(mouse)
       if @is_dragging
         soundManager.play('stretch')
@@ -39,8 +40,8 @@ class window.World
     $(@helper.canvas).on 'mousemove', (e) =>
       return unless @is_dragging
 
-      mouse.x = e.clientX
-      mouse.y = e.clientY
+      mouse.x = e.clientX + @camera.x
+      mouse.y = e.clientY + @camera.y
       mouse_dx = new SAT.Vector().copy(mouse).sub(init_mouse)
       @current_flower.drag_position = mouse
       @current_flower.drag_dx = mouse_dx
@@ -70,7 +71,7 @@ class window.World
       else if background.x + background.width > helper.width
         background.x -= background.width
 
-    if @bee.position.y > @helper.height
+    if @bee.position.y > @options.height
       @reset_game()
 
   simulate: (dt) ->
@@ -132,7 +133,24 @@ class window.World
 
     @update(helper)
 
+    @position_camera()
+
     @background.render(helper)
+
+    @helper.save()
+    @helper.translate(-@camera.x, -@camera.y)
     _.invoke(@flowers, 'render', helper)
     _.invoke(@obstacles, 'render', helper)
     @bee.render(helper)
+    @helper.restore()
+
+
+  position_camera: ->
+    dest = (new SAT.Vector()).copy(@bee.position).sub(new SAT.Vector(@helper.width/2, @helper.height/2))
+
+    dest.x = 0 if dest.x < 0
+    dest.y = 0 if dest.y < 0
+    dest.x = @options.width - @helper.width if dest.x + @helper.width > @options.width
+    dest.y = @options.height - @helper.height if dest.y + @helper.height> @options.height
+
+    @camera = dest
