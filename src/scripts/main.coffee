@@ -160,8 +160,8 @@ world = new World(helper, {
   obstacles: [
     new SAT.Box(new SAT.Vector((worldWidth/3 - 20), (worldHeight/2) + 50), 70, 70).toPolygon()
 
-    new SAT.Box(new SAT.Vector((worldWidth/3 - 50) + 400, (worldHeight/2) - 150), 70, 70).toPolygon()
-    new SAT.Box(new SAT.Vector((worldWidth/3 - 50) + 400, (worldHeight/2)), 70, 70).toPolygon()
+    new SAT.Box(new SAT.Vector((worldWidth/3 - 50) + 400, (worldHeight/2) - 200), 70, 70).toPolygon()
+    new SAT.Box(new SAT.Vector((worldWidth/3 - 50) + 400, (worldHeight/2) + 50), 70, 70).toPolygon()
   ]
 })
 
