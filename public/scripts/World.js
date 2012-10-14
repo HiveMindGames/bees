@@ -142,10 +142,15 @@
           });
         }
         if (this.bee.distance > 30) {
-          this.bee.is_flying = false;
           offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
-          this.bee.position.add(offset);
-          this.bee.velocity = new SAT.Vector();
+          if (this.current_target.is_back_normal(offset)) {
+            this.bee.position.add(offset);
+            this.bee.velocity.reflectN(collision_response.overlapN.perp()).scale(this.bounce_factor);
+          } else {
+            this.bee.is_flying = false;
+            this.bee.position.add(offset);
+            this.bee.velocity = new SAT.Vector();
+          }
         } else {
           this.bee.distance = 0;
         }

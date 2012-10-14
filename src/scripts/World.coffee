@@ -110,10 +110,14 @@ class window.World
         })
 
       if @bee.distance > 30
-        @bee.is_flying = false
         offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse()
-        @bee.position.add(offset)
-        @bee.velocity = new SAT.Vector()
+        if @current_target.is_back_normal(offset)
+          @bee.position.add(offset)
+          @bee.velocity.reflectN(collision_response.overlapN.perp()).scale(@bounce_factor)
+        else
+          @bee.is_flying = false
+          @bee.position.add(offset)
+          @bee.velocity = new SAT.Vector()
       else
         @bee.distance = 0
 

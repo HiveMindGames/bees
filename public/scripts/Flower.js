@@ -22,8 +22,8 @@
 
     Flower.prototype.contains = function(mouse) {
       var i, length, mousePos, pairs, point, points;
-      mousePos = new SAT.Vector(mouse.x - this.bounding_box.pos.x, mouse.y - this.bounding_box.pos.y);
-      points = this.bounding_box.points;
+      mousePos = new SAT.Vector(mouse.x - this.mouse_box.pos.x, mouse.y - this.mouse_box.pos.y);
+      points = this.mouse_box.points;
       length = points.length;
       pairs = (function() {
         var _i, _len, _results;
@@ -43,11 +43,18 @@
     };
 
     Flower.prototype.update_bounding_box = function() {
-      var half_height, half_width;
+      var half_height, half_width, offset;
       half_width = this.half_width - this.precision;
       half_height = this.half_height - this.precision;
-      this.bounding_box = new SAT.Polygon(this.petal_position, [Utils.rotateVector(new SAT.Vector(-half_width, -half_height), this.angle), Utils.rotateVector(new SAT.Vector(half_width, -half_height), this.angle), Utils.rotateVector(new SAT.Vector(half_width, half_height), this.angle), Utils.rotateVector(new SAT.Vector(-half_width, half_height), this.angle)]);
-      return this.bounding_box.recalc();
+      offset = 20;
+      this.bounding_box = new SAT.Polygon(this.petal_position, [Utils.rotateVector(new SAT.Vector(0, -half_height / 2 - offset), this.angle), Utils.rotateVector(new SAT.Vector(half_width, half_height - offset), this.angle), Utils.rotateVector(new SAT.Vector(-half_width, half_height - offset), this.angle)]);
+      return this.mouse_box = new SAT.Polygon(this.petal_position, [Utils.rotateVector(new SAT.Vector(-half_width, -half_height), this.angle), Utils.rotateVector(new SAT.Vector(half_width, -half_height), this.angle), Utils.rotateVector(new SAT.Vector(half_width, half_height), this.angle), Utils.rotateVector(new SAT.Vector(-half_width, half_height), this.angle)]);
+    };
+
+    Flower.prototype.is_back_normal = function(vec) {
+      var normal;
+      normal = Utils.rotateVector(new SAT.Vector(0, 1), this.angle);
+      return (vec.x * normal.x + normal.y * vec.y) > 0;
     };
 
     Flower.prototype.render = function(helper) {

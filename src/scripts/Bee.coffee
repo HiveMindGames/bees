@@ -69,3 +69,9 @@ class window.Bee
     helper.translate(@drag_dx.x, @drag_dx.y) if @drag_dx
     helper.render_image(@image, -@half_width, -@half_height, @width, @height)
     helper.restore()
+
+    # Draw Bounding box
+    #helper.save()
+    #helper.translate(@position.x - @half_width, @position.y - @half_height)
+    #helper.polygon(@bounding_box.points)
+    #helper.restore()
