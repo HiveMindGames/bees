@@ -26,7 +26,7 @@
       $(this.helper.canvas).on('mousedown', function(e) {
         init_mouse.x = mouse.x = e.clientX;
         init_mouse.y = mouse.y = e.clientY;
-        return is_dragging = _this.bee.contains(mouse);
+        return is_dragging = _this.current_flower.contains(mouse);
       });
       $(this.helper.canvas).on('mouseup', function(e) {
         if (is_dragging) {

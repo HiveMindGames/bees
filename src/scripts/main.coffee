@@ -3,7 +3,7 @@ helper = new CanvasHelper(document.getElementById('game'))
 world = new World(helper, {
   bee: {
     x: 264,
-    y: helper.half_height
+    y: helper.height - 290
   }
   flowers: [{
     petal_width: 128,

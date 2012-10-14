@@ -11,6 +11,32 @@ class window.Flower
 
     @update_bounding_box()
 
+  contains: (mouse) ->
+    { x, y } = mouse
+
+    inside = false
+    { points } = @bounding_box
+    { length } = points
+    max = length - 1
+    i = 0
+
+    while i < length
+      xi = points[i].x
+      yi = points[i].y
+      xj = points[max].x
+      yj = points[max].y
+      console.warn xi, yi, xj, yj
+
+      intersect = (yi > y isnt yj > y) and
+        (x < (xj - xi) * (y - yi) / (yj - yi) + xi)
+
+      console.warn 'intersect', intersect
+      inside = not inside if intersect
+      max = i++
+
+    console.warn 'inside', inside
+    return inside
+
   update_bounding_box: ->
     @rotated_position = Utils.rotateVector(new SAT.Vector(0, -@stem_height), @angle)
     @bounding_box = new SAT.Polygon(new SAT.Vector(

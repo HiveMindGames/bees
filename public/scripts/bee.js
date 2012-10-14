@@ -23,12 +23,6 @@
       this.update_bounding_box();
     }
 
-    Bee.prototype.contains = function(mouse) {
-      var x, y;
-      x = mouse.x, y = mouse.y;
-      return x > (this.position.x - this.half_size) && x < (this.position.x + this.half_size) && y > (this.position.y - this.half_size) && y < (this.position.y + this.half_size);
-    };
-
     Bee.prototype.update_bounding_box = function() {
       return this.bounding_box = (new SAT.Box(new SAT.Vector(this.position.x - this.half_size, this.position.y - this.half_size), this.size, this.size)).toPolygon();
     };

@@ -17,13 +17,6 @@ class window.Bee
 
     @update_bounding_box()
 
-  contains: (mouse) ->
-    { x, y } = mouse
-    return x > (@position.x - @half_size) and
-      x < (@position.x + @half_size) and
-      y > (@position.y - @half_size) and
-      y < (@position.y + @half_size)
-
   update_bounding_box: ->
     @bounding_box = (new SAT.Box(new SAT.Vector(
       @position.x - @half_size,

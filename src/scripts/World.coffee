@@ -12,7 +12,7 @@ class window.World
     $(@helper.canvas).on 'mousedown', (e) =>
       init_mouse.x = mouse.x = e.clientX
       init_mouse.y = mouse.y = e.clientY
-      is_dragging = @bee.contains(mouse)
+      is_dragging = @current_flower.contains(mouse)
 
     $(@helper.canvas).on 'mouseup', (e) =>
       if is_dragging
