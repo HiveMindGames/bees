@@ -28,6 +28,7 @@ class window.CanvasHelper
 
   translate: (x=0, y=0) -> @context.translate(x, y)
   rotate: (angle=0) -> @context.rotate(angle)
+  scale: (scale_x=0, scale_y=scale_x) -> @context.scale(scale_x, scale_y)
 
   save: -> @context.save()
   restore: -> @context.restore()

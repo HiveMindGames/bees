@@ -21,7 +21,7 @@
       return helper.render_image(image, x + width, y, width, height);
     };
 
-    Background.prototype.render = function(helper) {
+    Background.prototype.render = function(helper, zoom) {
       var background, _i, _len, _ref, _results;
       _ref = this.options;
       _results = [];

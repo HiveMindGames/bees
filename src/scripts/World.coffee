@@ -1,11 +1,17 @@
 class window.World
+  is_dragging: false
+  is_zoomed: false
+  zoom: 1
+  max_zoom: 0.5
+  zoom_factor: 0.025
+
   constructor: (@helper, @options) ->
     @background = new Background(@options.backgrounds)
-    @new_game()
+    @reset_game()
+    @translation = new SAT.Vector()
 
     mouse = new SAT.Vector()
     init_mouse = new SAT.Vector()
-    is_dragging = false
     mouse_dx = null
 
     $(@helper.canvas).on 'mousedown', (e) =>
@@ -13,12 +19,16 @@ class window.World
 
       init_mouse.x = mouse.x = e.clientX
       init_mouse.y = mouse.y = e.clientY
-      is_dragging = @current_flower.contains(mouse)
+      @is_dragging = not @is_zoomed and @current_flower.contains(mouse)
 
     $(@helper.canvas).on 'mouseup', (e) =>
-      return unless is_dragging
+      return unless @is_dragging
 
-      is_dragging = false
+      soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
+      soundManager.play('buzz', loops: 3)
+
+      @is_dragging = false
+      @is_zoomed = true
       @bee.is_flying = true
       @current_flower.drag_position = null
       @current_flower.drag_dx = null
@@ -26,7 +36,7 @@ class window.World
       @bee.acceleration.sub(mouse_dx) if mouse_dx
 
     $(@helper.canvas).on 'mousemove', (e) =>
-      return unless is_dragging
+      return unless @is_dragging
 
       mouse.x = e.clientX
       mouse.y = e.clientY
@@ -35,7 +45,9 @@ class window.World
       @current_flower.drag_dx = mouse_dx
       @bee.drag_dx = mouse_dx
 
-  new_game: ->
+  reset_game: ->
+    soundManager.stop('buzz')
+
     for background in @options.backgrounds
       background.x = 0
 
@@ -68,7 +80,11 @@ class window.World
       return has_collided
 
     if @current_flower
+      soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
+      soundManager.stop('buzz')
+
       @bee.is_flying = false
+      @is_zoomed = false
       offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse()
       @bee.position.add(offset)
       @bee.velocity.add(offset)
@@ -81,13 +97,22 @@ class window.World
       )
 
     if current_obstacle
+      soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
       @bee.velocity.reflectN(collision_response.overlapN.perp())
 
     if @bee.position.y > @helper.height
-      @new_game()
+      @is_zoomed = false
+      @reset_game()
 
   render: (helper) ->
     @update(helper)
+
+    if @is_zoomed
+      @zoom -= @zoom_factor
+      @zoom = @max_zoom if @zoom < @max_zoom
+    else
+      @zoom += @zoom_factor
+      @zoom = 1 if @zoom > 1
 
     @background.render(helper)
     _.invoke(@flowers, 'render', helper)

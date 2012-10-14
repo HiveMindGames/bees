@@ -13,6 +13,6 @@ class window.Background
     helper.render_image(image, x, y, width, height)
     helper.render_image(image, x + width, y, width, height)
 
-  render: (helper) ->
+  render: (helper, zoom) ->
     for background in @options
       @render_background(helper, background)

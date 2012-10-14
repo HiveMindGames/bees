@@ -2,16 +2,26 @@
 
   window.World = (function() {
 
+    World.prototype.is_dragging = false;
+
+    World.prototype.is_zoomed = false;
+
+    World.prototype.zoom = 1;
+
+    World.prototype.max_zoom = 0.5;
+
+    World.prototype.zoom_factor = 0.025;
+
     function World(helper, options) {
-      var init_mouse, is_dragging, mouse, mouse_dx,
+      var init_mouse, mouse, mouse_dx,
         _this = this;
       this.helper = helper;
       this.options = options;
       this.background = new Background(this.options.backgrounds);
-      this.new_game();
+      this.reset_game();
+      this.translation = new SAT.Vector();
       mouse = new SAT.Vector();
       init_mouse = new SAT.Vector();
-      is_dragging = false;
       mouse_dx = null;
       $(this.helper.canvas).on('mousedown', function(e) {
         if (!_this.current_flower) {
@@ -19,13 +29,18 @@
         }
         init_mouse.x = mouse.x = e.clientX;
         init_mouse.y = mouse.y = e.clientY;
-        return is_dragging = _this.current_flower.contains(mouse);
+        return _this.is_dragging = !_this.is_zoomed && _this.current_flower.contains(mouse);
       });
       $(this.helper.canvas).on('mouseup', function(e) {
-        if (!is_dragging) {
+        if (!_this.is_dragging) {
           return;
         }
-        is_dragging = false;
+        soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
+        soundManager.play('buzz', {
+          loops: 3
+        });
+        _this.is_dragging = false;
+        _this.is_zoomed = true;
         _this.bee.is_flying = true;
         _this.current_flower.drag_position = null;
         _this.current_flower.drag_dx = null;
@@ -35,7 +50,7 @@
         }
       });
       $(this.helper.canvas).on('mousemove', function(e) {
-        if (!is_dragging) {
+        if (!_this.is_dragging) {
           return;
         }
         mouse.x = e.clientX;
@@ -47,8 +62,9 @@
       });
     }
 
-    World.prototype.new_game = function() {
+    World.prototype.reset_game = function() {
       var background, option, poly, _i, _len, _ref;
+      soundManager.stop('buzz');
       _ref = this.options.backgrounds;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         background = _ref[_i];
@@ -105,7 +121,10 @@
         return has_collided;
       });
       if (this.current_flower) {
+        soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
+        soundManager.stop('buzz');
         this.bee.is_flying = false;
+        this.is_zoomed = false;
         offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
         this.bee.position.add(offset);
         this.bee.velocity.add(offset);
@@ -114,15 +133,28 @@
         return SAT.testPolygonPolygon(_this.bee.bounding_box, obstacle.poly, collision_response = new SAT.Response());
       });
       if (current_obstacle) {
+        soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
         this.bee.velocity.reflectN(collision_response.overlapN.perp());
       }
       if (this.bee.position.y > this.helper.height) {
-        return this.new_game();
+        this.is_zoomed = false;
+        return this.reset_game();
       }
     };
 
     World.prototype.render = function(helper) {
       this.update(helper);
+      if (this.is_zoomed) {
+        this.zoom -= this.zoom_factor;
+        if (this.zoom < this.max_zoom) {
+          this.zoom = this.max_zoom;
+        }
+      } else {
+        this.zoom += this.zoom_factor;
+        if (this.zoom > 1) {
+          this.zoom = 1;
+        }
+      }
       this.background.render(helper);
       _.invoke(this.flowers, 'render', helper);
       _.invoke(this.obstacles, 'render', helper);

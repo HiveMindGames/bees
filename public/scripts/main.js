@@ -1,6 +1,49 @@
 (function() {
   var helper, world;
 
+  soundManager.setup({
+    url: './swf/',
+    flashVersion: 9,
+    useFlashBlock: false,
+    onready: function() {
+      soundManager.createSound({
+        id: 'background',
+        url: './sounds/background.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 20
+      });
+      soundManager.createSound({
+        id: 'bounce1',
+        url: './sounds/bounce1.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 50
+      });
+      soundManager.createSound({
+        id: 'bounce2',
+        url: './sounds/bounce2.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 50
+      });
+      soundManager.createSound({
+        id: 'bounce3',
+        url: './sounds/bounce3.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 50
+      });
+      return soundManager.createSound({
+        id: 'buzz',
+        url: './sounds/buzz.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 50
+      });
+    }
+  });
+
   helper = new CanvasHelper(document.getElementById('game'));
 
   world = new World(helper, {

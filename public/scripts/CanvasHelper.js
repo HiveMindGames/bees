@@ -61,6 +61,16 @@
       return this.context.rotate(angle);
     };
 
+    CanvasHelper.prototype.scale = function(scale_x, scale_y) {
+      if (scale_x == null) {
+        scale_x = 0;
+      }
+      if (scale_y == null) {
+        scale_y = scale_x;
+      }
+      return this.context.scale(scale_x, scale_y);
+    };
+
     CanvasHelper.prototype.save = function() {
       return this.context.save();
     };
