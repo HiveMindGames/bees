@@ -1,23 +1,20 @@
 class window.Background
   constructor: (@options) ->
-    _.each @options, (option) ->
-      option.image = new Image(option.src)
-      option.image.src = option.src
- 
-  render_background: (helper, background) ->
-    { image, x, y, width, height } = background
-    scale = helper.height / height
-    height = helper.height
-    width *= scale
+    { @src, @repeat, @image, @x, @y, @width, @height, @increment } = @options
 
-    width = Math.floor width
-    height = Math.floor height
-    x = Math.floor x
-    y = Math.floor y
-    helper.render_image(image, x - width, y, width, height)
-    helper.render_image(image, x, y, width, height)
-    helper.render_image(image, x + width, y, width, height)
+    @image = new Image(@src)
+    @image.src = @src
 
-  render: (helper, zoom) ->
-    for background in @options
-      @render_background(helper, background)
+  render: (helper) ->
+    @width = Math.floor(@width)
+    @height = Math.floor(@height)
+    @x = Math.floor(@x)
+    @y = Math.floor(helper.height - @height)
+
+    # @pattern = helper.context.createPattern(@image, 'repeat-x')
+    # helper.fill(@pattern)
+    # helper.rect(@x, @y, @width, @height)
+
+    helper.render_image(@image, @x - @width, @y, @width, @height)
+    helper.render_image(@image, @x, @y, @width, @height)
+    helper.render_image(@image, @x + @width, @y, @width, @height)

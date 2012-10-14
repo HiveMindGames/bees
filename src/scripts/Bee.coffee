@@ -38,6 +38,7 @@ class window.Bee
 
     @distance += dpos.len()
 
+    @last_position = (new SAT.Vector()).copy(@position)
     @position.add dpos
     @velocity.add da.dvel.scale(dt)
     @update_bounding_box()

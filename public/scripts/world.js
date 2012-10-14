@@ -4,20 +4,14 @@
 
     World.prototype.is_dragging = false;
 
-    World.prototype.is_zoomed = false;
-
-    World.prototype.zoom = 1;
-
-    World.prototype.max_zoom = 0.5;
-
-    World.prototype.zoom_factor = 0.025;
+    World.prototype.bounce_factor = 0.9;
 
     function World(helper, options) {
       var init_mouse, mouse, mouse_dx,
         _this = this;
       this.helper = helper;
       this.options = options;
-      this.background = new Background(this.options.backgrounds);
+      this.background = new CompositeBackground(this.options.backgrounds);
       this.reset_game();
       this.translation = new SAT.Vector();
       mouse = new SAT.Vector();
@@ -29,7 +23,7 @@
         }
         init_mouse.x = mouse.x = e.clientX;
         init_mouse.y = mouse.y = e.clientY;
-        return _this.is_dragging = !_this.is_zoomed && _this.current_flower.contains(mouse);
+        return _this.is_dragging = _this.current_flower.contains(mouse);
       });
       $(this.helper.canvas).on('mouseup', function(e) {
         if (!_this.is_dragging) {
@@ -40,13 +34,13 @@
           loops: 3
         });
         _this.is_dragging = false;
-        _this.is_zoomed = true;
         _this.bee.is_flying = true;
         _this.current_flower.drag_position = null;
         _this.current_flower.drag_dx = null;
         _this.bee.drag_dx = null;
+        _this.bee.distance = 0;
         if (mouse_dx) {
-          return _this.bee.acceleration.sub(mouse_dx);
+          return _this.bee.velocity.sub((new SAT.Vector()).copy(mouse_dx).scale(4));
         }
       });
       $(this.helper.canvas).on('mousemove', function(e) {
@@ -65,7 +59,9 @@
     World.prototype.reset_game = function() {
       var background, option, poly, _i, _len, _ref;
       soundManager.stop('buzz');
-      _ref = this.options.backgrounds;
+      this.accumulator = 0;
+      this.time = 0;
+      _ref = this.background;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         background = _ref[_i];
         background.x = 0;
@@ -95,21 +91,31 @@
     };
 
     World.prototype.update = function(helper) {
-      var background, collision_response, current_obstacle, offset, _i, _len, _ref,
-        _this = this;
+      var background, _i, _len, _ref;
       if (!this.bee.is_flying) {
         return;
       }
-      _ref = this.options.backgrounds;
+      _ref = this.background.backgrounds;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         background = _ref[_i];
         background.x += (this.bee.last_position.x - this.bee.position.x) * background.increment;
-        if (background.x + background.width < helper.width) {
+        if (background.x < 0) {
           background.x += background.width;
-        }
-        if (background.x > 0) {
+        } else if (background.x + background.width > helper.width) {
           background.x -= background.width;
         }
+      }
+      if (this.bee.position.y > this.helper.height) {
+        return this.reset_game();
+      }
+    };
+
+    World.prototype.simulate = function(dt) {
+      var collision_response, current_obstacle, offset,
+        _this = this;
+      this.bee.simulate(dt);
+      if (!this.bee.is_flying) {
+        return;
       }
       collision_response = null;
       this.current_flower = _.find(this.flowers, function(flower) {
@@ -123,38 +129,39 @@
       if (this.current_flower) {
         soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
         soundManager.stop('buzz');
-        this.bee.is_flying = false;
-        this.is_zoomed = false;
-        offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
-        this.bee.position.add(offset);
-        this.bee.velocity.add(offset);
+        if (this.bee.distance > 30) {
+          this.bee.is_flying = false;
+          offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
+          this.bee.position.add(offset);
+          this.bee.velocity = new SAT.Vector();
+        } else {
+          this.bee.distance = 0;
+        }
       }
       current_obstacle = _.find(this.obstacles, function(obstacle) {
         return SAT.testPolygonPolygon(_this.bee.bounding_box, obstacle.poly, collision_response = new SAT.Response());
       });
       if (current_obstacle) {
         soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
-        this.bee.velocity.reflectN(collision_response.overlapN.perp());
-      }
-      if (this.bee.position.y > this.helper.height) {
-        this.is_zoomed = false;
-        return this.reset_game();
+        offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
+        this.bee.position.add(offset);
+        return this.bee.velocity.reflectN(collision_response.overlapN.perp()).scale(this.bounce_factor);
       }
     };
 
-    World.prototype.render = function(helper) {
-      this.update(helper);
-      if (this.is_zoomed) {
-        this.zoom -= this.zoom_factor;
-        if (this.zoom < this.max_zoom) {
-          this.zoom = this.max_zoom;
-        }
-      } else {
-        this.zoom += this.zoom_factor;
-        if (this.zoom > 1) {
-          this.zoom = 1;
-        }
+    World.prototype.render = function(helper, delta) {
+      var dt;
+      dt = 30;
+      if (delta > 250) {
+        delta = 250;
       }
+      this.accumulator += delta;
+      while (this.accumulator >= dt) {
+        this.simulate(dt / 1000);
+        this.accumulator -= dt;
+        this.time += dt;
+      }
+      this.update(helper);
       this.background.render(helper);
       _.invoke(this.flowers, 'render', helper);
       _.invoke(this.obstacles, 'render', helper);

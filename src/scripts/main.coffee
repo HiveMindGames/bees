@@ -42,26 +42,41 @@ world = new World(helper, {
     y: helper.height - 310
   },
   backgrounds: [{
-    src: 'images/bkg_0.png',
-    width: 1698,
-    height: 320,
+    src: 'images/sky.png',
+    width: 12,
+    height: 800,
+    x: 0,
+    y: 0,
+    repeat: true,
+    increment: 0
+  }, {
+    src: 'images/clouds.png',
+    width: 1060,
+    height: 550,
     x: 0,
     y: 0,
     increment: 1
   }, {
-    src: 'images/bkg_1.png',
-    width: 1704,
-    height: 320,
+    src: 'images/mountains.png',
+    width: 1060,
+    height: 250,
     x: 0,
     y: 0,
     increment: 2
   }, {
-    src: 'images/bkg_2.png',
-    width: 1707,
-    height: 320,
+    src: 'images/hills.png',
+    width: 1060,
+    height: 180,
     x: 0,
     y: 0,
     increment: 3
+  }, {
+    src: 'images/trees.png',
+    width: 1060,
+    height: 180,
+    x: 0,
+    y: 0,
+    increment: 4
   }],
   flowers: [{
     petal_width: 128,
