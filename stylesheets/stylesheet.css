@@ -338,13 +338,13 @@ Full-Width Styles
   text-indent: -5000px;
   overflow: hidden;
   background: url(../images/icon_play_large.png) no-repeat ;
-  
-  
 }
+
 .clean, .clean li {
   list-style: none;  
 
 }
+
 .download_link {
   padding-left: 150px;
   height: 100px;
@@ -360,6 +360,11 @@ Full-Width Styles
   background: url(../images/icon_download_hover.png) center left no-repeat ;
 }
 
+.logo {
+  display: block;
+  margin: 0 auto 0px auto;
+}
+
 #main_content_wrap {
   padding-top: 40px;
   box-shadow: #5c4813 0px 0px 20px;
@@ -369,7 +374,6 @@ Full-Width Styles
 }
 
 #main_content {
-  padding-top: 40px;
 }
 
 .stem {
