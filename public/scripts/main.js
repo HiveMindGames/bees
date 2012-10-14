@@ -48,9 +48,16 @@
         autoPlay: false,
         volume: 50
       });
-      return soundManager.createSound({
+      soundManager.createSound({
         id: 'spring',
         url: './sounds/spring.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 50
+      });
+      return soundManager.createSound({
+        id: 'victory',
+        url: './sounds/victory.mp3',
         autoLoad: true,
         autoPlay: false,
         volume: 50
@@ -64,7 +71,7 @@
     bee: {
       src: 'images/bee.png',
       x: 264,
-      y: helper.height - 290,
+      y: helper.height - 260,
       width: 64,
       height: 74
     },
@@ -107,28 +114,36 @@
         increment: 4
       }
     ],
-    flowers: [
+    targets: [
       {
         src: 'images/petals.png',
-        petal_width: 128,
-        petal_height: 64,
+        width: 128,
+        height: 64,
         position: new SAT.Vector(200, helper.height),
-        stem_height: 240,
+        stem_height: 220,
         angle: 15
       }, {
         src: 'images/petals.png',
-        petal_width: 128,
-        petal_height: 64,
+        width: 128,
+        height: 64,
         position: new SAT.Vector(helper.half_width - 200, helper.height),
-        stem_height: 240,
+        stem_height: 230,
         angle: 5
       }, {
         src: 'images/petals.png',
-        petal_width: 128,
-        petal_height: 64,
-        position: new SAT.Vector(helper.half_width + 350, helper.height),
+        width: 128,
+        height: 64,
+        position: new SAT.Vector(helper.half_width + 150, helper.height),
+        stem_height: 200,
+        angle: -15
+      }, {
+        src: 'images/petals.png',
+        width: 128,
+        height: 64,
+        position: new SAT.Vector(helper.half_width + 450, helper.height),
         stem_height: 240,
-        angle: -25
+        angle: -25,
+        final: true
       }
     ],
     obstacles: [new SAT.Box(new SAT.Vector(10, 10), 30, 200).toPolygon(), new SAT.Box(new SAT.Vector(helper.half_width + 450, 10), 300, 30).toPolygon(), new SAT.Box(new SAT.Vector(helper.half_width + 450, 200), 300, 30).toPolygon(), new SAT.Box(new SAT.Vector(helper.half_width + 700, 10), 30, 200).toPolygon()]

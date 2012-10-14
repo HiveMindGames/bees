@@ -16,14 +16,12 @@ class window.World
       @reset_game()
 
     $(@helper.canvas).on 'mousedown', (e) =>
-      return unless @current_flower
+      return unless @current_target
 
       init_mouse.x = mouse.x = e.clientX
       init_mouse.y = mouse.y = e.clientY
-      @is_dragging = @current_flower.contains(mouse)
+      @is_dragging = @current_target.contains(mouse)
       if @is_dragging
-        @bee.position.x = @current_flower.bounding_box.pos.x
-        @bee.position.y = @current_flower.bounding_box.pos.y - @current_flower.half_petal_height
         soundManager.play('stretch')
 
     $(@helper.canvas).on 'mouseup', (e) =>
@@ -36,8 +34,8 @@ class window.World
 
       @is_dragging = false
       @bee.is_flying = true
-      @current_flower.drag_position = null
-      @current_flower.drag_dx = null
+      @current_target.drag_position = null
+      @current_target.drag_dx = null
       @bee.drag_dx = null
       @bee.distance = 0
       @bee.velocity.sub((new SAT.Vector()).copy(mouse_dx).scale(4)) if mouse_dx
@@ -48,8 +46,8 @@ class window.World
       mouse.x = e.clientX
       mouse.y = e.clientY
       mouse_dx = new SAT.Vector().copy(mouse).sub(init_mouse)
-      @current_flower.drag_position = mouse
-      @current_flower.drag_dx = mouse_dx
+      @current_target.drag_position = mouse
+      @current_target.drag_dx = mouse_dx
       @bee.drag_dx = mouse_dx
 
   reset_game: ->
@@ -61,8 +59,9 @@ class window.World
       background.x = 0
 
     @bee = new Bee(@options.bee)
-    @flowers = (new Flower(option) for option in @options.flowers)
-    @current_flower = @flowers[0]
+    @targets = _.map @options.targets, (options) ->
+      return new Flower(options)
+    @current_target = @targets[0]
     @obstacles = (new Obstacle(poly) for poly in @options.obstacles)
 
   update: (helper) ->
@@ -86,8 +85,8 @@ class window.World
 
     collision_response = null
 
-    @current_flower = _.find @flowers, (flower) =>
-      if flower is @current_flower
+    @current_target = _.find @targets, (flower) =>
+      if flower is @current_target
         return false
 
       has_collided = SAT.testPolygonPolygon(
@@ -97,9 +96,12 @@ class window.World
       )
       return has_collided
 
-    if @current_flower
+    if @current_target
       soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
       soundManager.stop('buzz')
+
+      if @current_target.final
+        soundManager.play('victory')
 
       if @bee.distance > 30
         @bee.is_flying = false
@@ -138,6 +140,6 @@ class window.World
     @update(helper)
 
     @background.render(helper)
-    _.invoke(@flowers, 'render', helper)
+    _.invoke(@targets, 'render', helper)
     _.invoke(@obstacles, 'render', helper)
     @bee.render(helper)

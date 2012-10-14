@@ -22,15 +22,13 @@
         return _this.reset_game();
       });
       $(this.helper.canvas).on('mousedown', function(e) {
-        if (!_this.current_flower) {
+        if (!_this.current_target) {
           return;
         }
         init_mouse.x = mouse.x = e.clientX;
         init_mouse.y = mouse.y = e.clientY;
-        _this.is_dragging = _this.current_flower.contains(mouse);
+        _this.is_dragging = _this.current_target.contains(mouse);
         if (_this.is_dragging) {
-          _this.bee.position.x = _this.current_flower.bounding_box.pos.x;
-          _this.bee.position.y = _this.current_flower.bounding_box.pos.y - _this.current_flower.half_petal_height;
           return soundManager.play('stretch');
         }
       });
@@ -46,8 +44,8 @@
         soundManager.play('spring');
         _this.is_dragging = false;
         _this.bee.is_flying = true;
-        _this.current_flower.drag_position = null;
-        _this.current_flower.drag_dx = null;
+        _this.current_target.drag_position = null;
+        _this.current_target.drag_dx = null;
         _this.bee.drag_dx = null;
         _this.bee.distance = 0;
         if (mouse_dx) {
@@ -61,14 +59,14 @@
         mouse.x = e.clientX;
         mouse.y = e.clientY;
         mouse_dx = new SAT.Vector().copy(mouse).sub(init_mouse);
-        _this.current_flower.drag_position = mouse;
-        _this.current_flower.drag_dx = mouse_dx;
+        _this.current_target.drag_position = mouse;
+        _this.current_target.drag_dx = mouse_dx;
         return _this.bee.drag_dx = mouse_dx;
       });
     }
 
     World.prototype.reset_game = function() {
-      var background, option, poly, _i, _len, _ref;
+      var background, poly, _i, _len, _ref;
       soundManager.stop('buzz');
       this.accumulator = 0;
       this.time = 0;
@@ -78,17 +76,10 @@
         background.x = 0;
       }
       this.bee = new Bee(this.options.bee);
-      this.flowers = (function() {
-        var _j, _len1, _ref1, _results;
-        _ref1 = this.options.flowers;
-        _results = [];
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          option = _ref1[_j];
-          _results.push(new Flower(option));
-        }
-        return _results;
-      }).call(this);
-      this.current_flower = this.flowers[0];
+      this.targets = _.map(this.options.targets, function(options) {
+        return new Flower(options);
+      });
+      this.current_target = this.targets[0];
       return this.obstacles = (function() {
         var _j, _len1, _ref1, _results;
         _ref1 = this.options.obstacles;
@@ -129,17 +120,20 @@
         return;
       }
       collision_response = null;
-      this.current_flower = _.find(this.flowers, function(flower) {
+      this.current_target = _.find(this.targets, function(flower) {
         var has_collided;
-        if (flower === _this.current_flower) {
+        if (flower === _this.current_target) {
           return false;
         }
         has_collided = SAT.testPolygonPolygon(_this.bee.bounding_box, flower.bounding_box, collision_response = new SAT.Response());
         return has_collided;
       });
-      if (this.current_flower) {
+      if (this.current_target) {
         soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
         soundManager.stop('buzz');
+        if (this.current_target.final) {
+          soundManager.play('victory');
+        }
         if (this.bee.distance > 30) {
           this.bee.is_flying = false;
           offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
@@ -174,7 +168,7 @@
       }
       this.update(helper);
       this.background.render(helper);
-      _.invoke(this.flowers, 'render', helper);
+      _.invoke(this.targets, 'render', helper);
       _.invoke(this.obstacles, 'render', helper);
       return this.bee.render(helper);
     };
