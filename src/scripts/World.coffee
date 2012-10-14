@@ -21,7 +21,7 @@ class window.World
 
       init_mouse.x = mouse.x = e.clientX + @camera.x
       init_mouse.y = mouse.y = e.clientY + @camera.y
-      @is_dragging = @current_flower.contains(mouse)
+      @is_dragging = @current_target.contains(mouse)
 
       if @is_dragging
         soundManager.play('stretch')
