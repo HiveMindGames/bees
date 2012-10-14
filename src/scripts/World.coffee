@@ -15,22 +15,20 @@ class window.World
       is_dragging = @current_flower.contains(mouse)
 
     $(@helper.canvas).on 'mouseup', (e) =>
-      if is_dragging
-        is_dragging = false
-        @bee.is_flying = true
-        @bee.acceleration.sub(mouse_dx)
+      return unless is_dragging
+      is_dragging = false
+      @bee.is_flying = true
+      @bee.acceleration.sub(mouse_dx)
 
     $(@helper.canvas).on 'mousemove', (e) =>
-      unless is_dragging
-        return
-
+      return unless is_dragging
       mouse.x = e.clientX
       mouse.y = e.clientY
       mouse_dx = new SAT.Vector().copy(mouse).sub(init_mouse)
+      @current_flower.update_bounding_box(mouse)
 
   update: ->
-    unless @bee.is_flying
-      return
+    return unless @bee.is_flying
 
     collision_response = null
 

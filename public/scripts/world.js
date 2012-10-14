@@ -29,11 +29,12 @@
         return is_dragging = _this.current_flower.contains(mouse);
       });
       $(this.helper.canvas).on('mouseup', function(e) {
-        if (is_dragging) {
-          is_dragging = false;
-          _this.bee.is_flying = true;
-          return _this.bee.acceleration.sub(mouse_dx);
+        if (!is_dragging) {
+          return;
         }
+        is_dragging = false;
+        _this.bee.is_flying = true;
+        return _this.bee.acceleration.sub(mouse_dx);
       });
       $(this.helper.canvas).on('mousemove', function(e) {
         if (!is_dragging) {
@@ -41,7 +42,8 @@
         }
         mouse.x = e.clientX;
         mouse.y = e.clientY;
-        return mouse_dx = new SAT.Vector().copy(mouse).sub(init_mouse);
+        mouse_dx = new SAT.Vector().copy(mouse).sub(init_mouse);
+        return _this.current_flower.update_bounding_box(mouse);
       });
     }
 

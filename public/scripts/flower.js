@@ -22,9 +22,9 @@
       return x > (position.x - this.half_petal_width) && x < (position.x + this.half_petal_width) && y > (position.y - this.half_petal_height) && y < (position.y + this.half_petal_height);
     };
 
-    Flower.prototype.update_bounding_box = function() {
+    Flower.prototype.update_bounding_box = function(updated_position) {
       this.rotated_position = Utils.rotateVector(new SAT.Vector(0, -this.stem_height), this.angle);
-      this.bounding_box = new SAT.Polygon(new SAT.Vector(this.position.x + this.rotated_position.x, this.position.y + this.rotated_position.y), [Utils.rotateVector(new SAT.Vector(-this.half_petal_width, -this.half_petal_height), this.angle), Utils.rotateVector(new SAT.Vector(this.half_petal_width, -this.half_petal_height), this.angle), Utils.rotateVector(new SAT.Vector(-this.half_petal_width, this.half_petal_height), this.angle), Utils.rotateVector(new SAT.Vector(this.half_petal_width, this.half_petal_height), this.angle)]);
+      this.bounding_box = new SAT.Polygon(updated_position || this.rotated_position.add(this.position), [Utils.rotateVector(new SAT.Vector(-this.half_petal_width, -this.half_petal_height), this.angle), Utils.rotateVector(new SAT.Vector(this.half_petal_width, -this.half_petal_height), this.angle), Utils.rotateVector(new SAT.Vector(-this.half_petal_width, this.half_petal_height), this.angle), Utils.rotateVector(new SAT.Vector(this.half_petal_width, this.half_petal_height), this.angle)]);
       return this.bounding_box.recalc();
     };
 
@@ -34,9 +34,13 @@
       helper.translate(this.position.x, this.position.y);
       helper.rotate(this.angle);
       helper.rect(0, -this.half_stem_height, this.stem_thickness, this.stem_height);
+      helper.restore();
       helper.fill('#ee0');
+      helper.save();
+      helper.translate(this.position.x, this.position.y);
       helper.translate(0, -this.stem_height);
-      helper.rect(0, 0, this.petal_width, this.petal_height);
+      helper.rotate(this.angle);
+      helper.rect(-this.half_petal_width, -this.half_petal_height, this.petal_width, this.petal_height);
       return helper.restore();
     };
 
