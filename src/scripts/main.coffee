@@ -158,10 +158,10 @@ world = new World(helper, {
   }],
   targets: targets,
   obstacles: [
-    new SAT.Box(new SAT.Vector((worldWidth/3 - 50), (worldHeight/2)), 70, 70).toPolygon()
+    new SAT.Box(new SAT.Vector((worldWidth/3 - 20), (worldHeight/2) + 50), 70, 70).toPolygon()
 
-    new SAT.Box(new SAT.Vector((worldWidth/3 - 50) + 300, (worldHeight/2) - 150), 70, 70).toPolygon()
-    new SAT.Box(new SAT.Vector((worldWidth/3 - 50) + 300, (worldHeight/2)), 70, 70).toPolygon()
+    new SAT.Box(new SAT.Vector((worldWidth/3 - 50) + 400, (worldHeight/2) - 150), 70, 70).toPolygon()
+    new SAT.Box(new SAT.Vector((worldWidth/3 - 50) + 400, (worldHeight/2)), 70, 70).toPolygon()
   ]
 })
 

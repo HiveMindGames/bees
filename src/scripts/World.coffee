@@ -179,15 +179,15 @@ class window.World
     if current_obstacle
       soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
       offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse()
-      @collision = new Collision((new SAT.Vector()).copy(@bee.position))
-      setTimeout =>
-        @collision = null
-      , 500
       @bee.position.add(offset)
       @bee.velocity.reflectN(collision_response.overlapN.perp()).scale(@bounce_factor)
 
       unless current_obstacle.hit
         @bee.points += 20
+        @collision = new Collision((new SAT.Vector()).copy(@bee.position))
+        setTimeout =>
+          @collision = null
+        , 500
 
       current_obstacle.hit = true
 
