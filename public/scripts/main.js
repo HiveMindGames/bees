@@ -10,21 +10,21 @@
     },
     backgrounds: [
       {
-        src: '/images/bkg_0.png',
+        src: 'images/bkg_0.png',
         width: 1698,
         height: 320,
         x: 0,
         y: 0,
         increment: 1
       }, {
-        src: '/images/bkg_1.png',
+        src: 'images/bkg_1.png',
         width: 1704,
         height: 320,
         x: 0,
         y: 0,
         increment: 2
       }, {
-        src: '/images/bkg_2.png',
+        src: 'images/bkg_2.png',
         width: 1707,
         height: 320,
         x: 0,
