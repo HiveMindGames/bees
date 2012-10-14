@@ -2,9 +2,9 @@
 
   window.Bee = (function() {
 
-    Bee.prototype.drag = 0.1;
+    Bee.prototype.precision = 10;
 
-    Bee.prototype.size = 64;
+    Bee.prototype.drag = 0.1;
 
     Bee.prototype.is_flying = false;
 
@@ -15,16 +15,19 @@
     function Bee(options) {
       var x, y, _ref;
       this.options = options;
-      _ref = this.options, x = _ref.x, y = _ref.y;
+      _ref = this.options, this.src = _ref.src, this.width = _ref.width, this.height = _ref.height, x = _ref.x, y = _ref.y;
+      this.half_width = this.width / 2;
+      this.half_height = this.height / 2;
+      this.image = new Image();
+      this.image.src = this.src;
       this.position = this.last_position = new SAT.Vector(x, y);
-      this.half_size = this.size / 2;
       this.velocity = new SAT.Vector();
       this.acceleration = new SAT.Vector();
       this.update_bounding_box();
     }
 
     Bee.prototype.update_bounding_box = function() {
-      return this.bounding_box = (new SAT.Box(new SAT.Vector(this.position.x - this.half_size, this.position.y - this.half_size), this.size, this.size)).toPolygon();
+      return this.bounding_box = (new SAT.Box(new SAT.Vector(this.position.x - this.half_width + this.precision, this.position.y - this.half_height + this.precision), this.width - this.precision, this.height - this.precision)).toPolygon();
     };
 
     Bee.prototype.simulate = function(dt) {
@@ -61,13 +64,12 @@
     };
 
     Bee.prototype.render = function(helper) {
-      helper.fill('#000');
       helper.save();
       helper.translate(this.position.x, this.position.y);
       if (this.drag_dx) {
         helper.translate(this.drag_dx.x, this.drag_dx.y);
       }
-      helper.rect(0, 0, this.size, this.size);
+      helper.render_image(this.image, -this.half_width, -this.half_height, this.width, this.height);
       return helper.restore();
     };
 

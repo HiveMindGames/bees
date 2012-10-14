@@ -34,6 +34,11 @@ class window.CanvasHelper
   restore: -> @context.restore()
 
   render_image: (src, x=0, y=0, width=@width, height=@height) ->
+    x = Math.round(x)
+    y = Math.round(y)
+    width = Math.round(width)
+    height = Math.round(height)
+
     if typeof src isnt 'string'
       @context.drawImage(src, x, y, width, height)
       return

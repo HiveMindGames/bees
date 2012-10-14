@@ -6,15 +6,13 @@ class window.Background
     @image.src = @src
 
   render: (helper) ->
-    @width = Math.floor(@width)
-    @height = Math.floor(@height)
-    @x = Math.floor(@x)
-    @y = Math.floor(helper.height - @height)
+    @y = helper.height - @height
 
-    # @pattern = helper.context.createPattern(@image, 'repeat-x')
-    # helper.fill(@pattern)
-    # helper.rect(@x, @y, @width, @height)
-
-    helper.render_image(@image, @x - @width, @y, @width, @height)
-    helper.render_image(@image, @x, @y, @width, @height)
-    helper.render_image(@image, @x + @width, @y, @width, @height)
+    if @repeat
+      @pattern = helper.context.createPattern(@image, 'repeat-x')
+      helper.fill(@pattern)
+      helper.rect(helper.half_width, helper.half_height)
+    else
+      helper.render_image(@image, @x - @width, @y, @width, @height)
+      helper.render_image(@image, @x, @y, @width, @height)
+      helper.render_image(@image, @x + @width, @y, @width, @height)

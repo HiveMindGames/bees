@@ -38,8 +38,11 @@ helper = new CanvasHelper(document.getElementById('game'))
 
 world = new World(helper, {
   bee: {
+    src: 'images/bee.png',
     x: 264,
-    y: helper.height - 310
+    y: helper.height - 290
+    width: 64
+    height: 74
   },
   backgrounds: [{
     src: 'images/sky.png',
@@ -79,18 +82,21 @@ world = new World(helper, {
     increment: 4
   }],
   flowers: [{
+    src: 'images/petals.png',
     petal_width: 128,
     petal_height: 64,
     position: new SAT.Vector(200, helper.height),
     stem_height: 240,
     angle: 15
   }, {
+    src: 'images/petals.png',
     petal_width: 128,
     petal_height: 64,
     position: new SAT.Vector(helper.half_width - 200, helper.height),
     stem_height: 240,
     angle: 5
   }, {
+    src: 'images/petals.png',
     petal_width: 128,
     petal_height: 64,
     position: new SAT.Vector(helper.half_width + 350, helper.height),

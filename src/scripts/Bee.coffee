@@ -1,6 +1,6 @@
 class window.Bee
+  precision: 10
   drag: 0.1
-  size: 64
 
   is_flying: false
   distance: 0
@@ -8,9 +8,15 @@ class window.Bee
   gravity: new SAT.Vector(0, 900)
 
   constructor: (@options) ->
-    { x, y } = @options
+    { @src, @width, @height, x, y } = @options
+
+    @half_width = @width / 2
+    @half_height = @height / 2
+
+    @image = new Image()
+    @image.src = @src
+
     @position = @last_position = new SAT.Vector(x, y)
-    @half_size = @size / 2
 
     @velocity = new SAT.Vector()
     @acceleration = new SAT.Vector()
@@ -19,9 +25,9 @@ class window.Bee
 
   update_bounding_box: ->
     @bounding_box = (new SAT.Box(new SAT.Vector(
-      @position.x - @half_size,
-      @position.y - @half_size
-    ), @size, @size)).toPolygon()
+      @position.x - @half_width + @precision,
+      @position.y - @half_height + @precision
+    ), @width - @precision, @height - @precision)).toPolygon()
 
   simulate: (dt) ->
     return if not @is_flying
@@ -58,12 +64,9 @@ class window.Bee
     }
 
   render: (helper) ->
-
-
-    helper.fill('#000')
     helper.save()
     helper.translate(@position.x, @position.y)
     if @drag_dx
       helper.translate(@drag_dx.x, @drag_dx.y)
-    helper.rect(0, 0, @size, @size)
-    helper.restore()   
+    helper.render_image(@image, -@half_width, -@half_height, @width, @height)
+    helper.restore()

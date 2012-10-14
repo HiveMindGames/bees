@@ -93,6 +93,10 @@
       if (height == null) {
         height = this.height;
       }
+      x = Math.round(x);
+      y = Math.round(y);
+      width = Math.round(width);
+      height = Math.round(height);
       if (typeof src !== 'string') {
         this.context.drawImage(src, x, y, width, height);
         return;

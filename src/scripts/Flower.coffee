@@ -1,8 +1,13 @@
 class window.Flower
+  precision: 10
   stem_thickness: 10
 
   constructor: (@options={}) ->
-    { @petal_width, @petal_height, @position, @stem_height, @angle } = @options
+    { @src, @petal_width, @petal_height, @position, @stem_height, @angle } = @options
+
+    @image = new Image()
+    @image.src = @src
+
     @half_stem_height = @stem_height / 2
     @angle = Utils.degToRad(@angle)
 
@@ -30,11 +35,13 @@ class window.Flower
       return (edge.x * to_mouse.y - to_mouse.x * edge.y) < 0
 
   update_bounding_box: ->
+    half_width = @half_petal_width - @precision
+    half_height = @half_petal_height - @precision
     @bounding_box = new SAT.Polygon(@petal_position, [
-      Utils.rotateVector(new SAT.Vector(-@half_petal_width, -@half_petal_height), @angle)
-      Utils.rotateVector(new SAT.Vector(@half_petal_width, -@half_petal_height), @angle)
-      Utils.rotateVector(new SAT.Vector(@half_petal_width, @half_petal_height), @angle)
-      Utils.rotateVector(new SAT.Vector(-@half_petal_width, @half_petal_height), @angle)
+      Utils.rotateVector(new SAT.Vector(-half_width, -half_height), @angle)
+      Utils.rotateVector(new SAT.Vector(half_width, -half_height), @angle)
+      Utils.rotateVector(new SAT.Vector(half_width, half_height), @angle)
+      Utils.rotateVector(new SAT.Vector(-half_width, half_height), @angle)
     ])
     @bounding_box.recalc()
 
@@ -42,6 +49,7 @@ class window.Flower
     # stem
     helper.save()
     stem_color = '#080'
+    helper.context.lineCap = 'round'
     if @drag_position
       helper.context.beginPath()
       helper.context.moveTo(@position.x, @position.y)
@@ -59,10 +67,9 @@ class window.Flower
 
     # petal
     helper.save()
-    helper.fill('#ee0')
     helper.translate(@drag_dx.x, @drag_dx.y) if @drag_dx
     helper.translate(@position.x, @position.y)
     helper.rotate(@angle)
     helper.translate(0, -@stem_height)
-    helper.rect(0, 0, @petal_width, @petal_height)
+    helper.render_image(@image, -@half_petal_width, -@half_petal_height, @petal_width, @petal_height)
     helper.restore()   
