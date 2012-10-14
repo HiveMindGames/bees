@@ -82,7 +82,7 @@ class window.Flower
     helper.rotate(@angle)
     helper.translate(0, -@stem_height)
     helper.render_image(@image, -@half_width, -@half_height, @width, @height)
-    helper.restore()   
+    helper.restore()
 
     # Draw Bounding box
     #helper.save()
