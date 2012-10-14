@@ -134,7 +134,12 @@
         soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
         soundManager.stop('buzz');
         if (this.current_target.final) {
-          soundManager.play('victory');
+          soundManager.stop('background');
+          soundManager.play('victory', {
+            onfinish: function() {
+              return soundManager.play('background');
+            }
+          });
         }
         if (this.bee.distance > 30) {
           this.bee.is_flying = false;

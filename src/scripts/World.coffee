@@ -103,7 +103,11 @@ class window.World
       soundManager.stop('buzz')
 
       if @current_target.final
-        soundManager.play('victory')
+        soundManager.stop('background')
+        soundManager.play('victory', {
+          onfinish: ->
+            soundManager.play('background')
+        })
 
       if @bee.distance > 30
         @bee.is_flying = false
