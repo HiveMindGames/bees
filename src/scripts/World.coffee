@@ -17,12 +17,16 @@ class window.World
       init_mouse.x = mouse.x = e.clientX
       init_mouse.y = mouse.y = e.clientY
       @is_dragging = @current_flower.contains(mouse)
+      if @is_dragging
+        soundManager.play('stretch')
 
     $(@helper.canvas).on 'mouseup', (e) =>
       return unless @is_dragging
 
       soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
       soundManager.play('buzz', loops: 3)
+      soundManager.stop('stretch')
+      soundManager.play('spring')
 
       @is_dragging = false
       @bee.is_flying = true

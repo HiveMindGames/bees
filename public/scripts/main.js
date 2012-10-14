@@ -10,8 +10,8 @@
         id: 'background',
         url: './sounds/background.mp3',
         autoLoad: true,
-        autoPlay: false,
-        volume: 20
+        autoPlay: true,
+        volume: 10
       });
       soundManager.createSound({
         id: 'bounce1',
@@ -34,9 +34,23 @@
         autoPlay: false,
         volume: 50
       });
-      return soundManager.createSound({
+      soundManager.createSound({
         id: 'buzz',
         url: './sounds/buzz.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 20
+      });
+      soundManager.createSound({
+        id: 'stretch',
+        url: './sounds/stretch.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 50
+      });
+      return soundManager.createSound({
+        id: 'spring',
+        url: './sounds/spring.mp3',
         autoLoad: true,
         autoPlay: false,
         volume: 50

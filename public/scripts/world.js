@@ -23,7 +23,10 @@
         }
         init_mouse.x = mouse.x = e.clientX;
         init_mouse.y = mouse.y = e.clientY;
-        return _this.is_dragging = _this.current_flower.contains(mouse);
+        _this.is_dragging = _this.current_flower.contains(mouse);
+        if (_this.is_dragging) {
+          return soundManager.play('stretch');
+        }
       });
       $(this.helper.canvas).on('mouseup', function(e) {
         if (!_this.is_dragging) {
@@ -33,6 +36,8 @@
         soundManager.play('buzz', {
           loops: 3
         });
+        soundManager.stop('stretch');
+        soundManager.play('spring');
         _this.is_dragging = false;
         _this.bee.is_flying = true;
         _this.current_flower.drag_position = null;

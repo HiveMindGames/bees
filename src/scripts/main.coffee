@@ -7,8 +7,8 @@ soundManager.setup
       id: 'background'
       url: './sounds/background.mp3'
       autoLoad: true
-      autoPlay: false
-      volume: 20
+      autoPlay: true
+      volume: 10
     soundManager.createSound
       id: 'bounce1'
       url: './sounds/bounce1.mp3'
@@ -30,6 +30,18 @@ soundManager.setup
     soundManager.createSound
       id: 'buzz'
       url: './sounds/buzz.mp3'
+      autoLoad: true
+      autoPlay: false
+      volume: 20
+    soundManager.createSound
+      id: 'stretch'
+      url: './sounds/stretch.mp3'
+      autoLoad: true
+      autoPlay: false
+      volume: 50
+    soundManager.createSound
+      id: 'spring'
+      url: './sounds/spring.mp3'
       autoLoad: true
       autoPlay: false
       volume: 50
