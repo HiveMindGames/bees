@@ -55,6 +55,8 @@ soundManager.setup
 helper = new CanvasHelper(document.getElementById('game'))
 
 world = new World(helper, {
+  width: helper.width * 2,
+  height: helper.height
   bee: {
     src: 'images/bee.png',
     x: 264,
