@@ -10,14 +10,6 @@ class window.World
     is_dragging = false
     mouse_dx = null
 
-    $(window).on 'keydown', (e) =>
-      for background in @options.backgrounds
-        console.warn background
-        if (background.x + background.increment) < (background.width - background.imcrement)
-          background.x += background.increment
-        else
-          background.x = 0
-
     $(@helper.canvas).on 'mousedown', (e) =>
       init_mouse.x = mouse.x = e.clientX
       init_mouse.y = mouse.y = e.clientY
@@ -41,8 +33,15 @@ class window.World
       @current_flower.drag_dx = mouse_dx
       @bee.drag_dx = mouse_dx
 
-  update: ->
+  update: (helper) ->
     return unless @bee.is_flying
+
+    for background in @options.backgrounds
+      background.x += (@bee.last_position.x - @bee.position.x) * background.increment
+      if background.x + background.width < helper.width
+        background.x += background.width
+      if background.x > 0
+        background.x -= background.width
 
     collision_response = null
 
@@ -50,11 +49,12 @@ class window.World
       if flower is @current_flower
         return false
 
-      return SAT.testPolygonPolygon(
+      has_collided = SAT.testPolygonPolygon(
         @bee.bounding_box,
         flower.bounding_box,
         collision_response = new SAT.Response()
       )
+      return has_collided
 
     if @current_flower
       @bee.is_flying = false
@@ -63,7 +63,7 @@ class window.World
       @bee.velocity.add(offset)
 
   render: (helper) ->
-    @update()
+    @update(helper)
 
     @background.render(helper)
     _.invoke(@flowers, 'render', helper)

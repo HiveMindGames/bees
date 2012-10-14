@@ -16,7 +16,7 @@
       var x, y, _ref;
       this.options = options;
       _ref = this.options, x = _ref.x, y = _ref.y;
-      this.position = new SAT.Vector(x, y);
+      this.position = this.last_position = new SAT.Vector(x, y);
       this.half_size = this.size / 2;
       this.velocity = new SAT.Vector();
       this.acceleration = new SAT.Vector();
@@ -31,6 +31,7 @@
       this.acceleration.scale(this.deceleration, this.deceleration);
       this.acceleration.add(this.gravity);
       this.velocity.add(this.acceleration);
+      this.last_position = (new SAT.Vector()).copy(this.position);
       this.position.add(this.velocity);
       this.update_bounding_box();
       return this.velocity.scale(this.drag, this.drag);

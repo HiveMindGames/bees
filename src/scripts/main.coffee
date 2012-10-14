@@ -11,21 +11,21 @@ world = new World(helper, {
     height: 320,
     x: 0,
     y: 0,
-    increment: 6
+    increment: 1
   }, {
     src: '/images/bkg_1.png',
     width: 1704,
     height: 320,
     x: 0,
     y: 0,
-    increment: 12
+    increment: 2
   }, {
     src: '/images/bkg_2.png',
     width: 1707,
     height: 320,
     x: 0,
     y: 0,
-    increment: 24
+    increment: 3
   }],
   flowers: [{
     petal_width: 128,

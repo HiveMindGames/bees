@@ -24,20 +24,6 @@
       init_mouse = new SAT.Vector();
       is_dragging = false;
       mouse_dx = null;
-      $(window).on('keydown', function(e) {
-        var background, _i, _len, _ref, _results;
-        _ref = _this.options.backgrounds;
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          background = _ref[_i];
-          if ((background.x + background.increment) < (background.width - background.imcrement)) {
-            _results.push(background.x += background.increment);
-          } else {
-            _results.push(background.x = 0);
-          }
-        }
-        return _results;
-      });
       $(this.helper.canvas).on('mousedown', function(e) {
         init_mouse.x = mouse.x = e.clientX;
         init_mouse.y = mouse.y = e.clientY;
@@ -69,18 +55,31 @@
       });
     }
 
-    World.prototype.update = function() {
-      var collision_response, offset,
+    World.prototype.update = function(helper) {
+      var background, collision_response, offset, _i, _len, _ref,
         _this = this;
       if (!this.bee.is_flying) {
         return;
       }
+      _ref = this.options.backgrounds;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        background = _ref[_i];
+        background.x += (this.bee.last_position.x - this.bee.position.x) * background.increment;
+        if (background.x + background.width < helper.width) {
+          background.x += background.width;
+        }
+        if (background.x > 0) {
+          background.x -= background.width;
+        }
+      }
       collision_response = null;
       this.current_flower = _.find(this.flowers, function(flower) {
+        var has_collided;
         if (flower === _this.current_flower) {
           return false;
         }
-        return SAT.testPolygonPolygon(_this.bee.bounding_box, flower.bounding_box, collision_response = new SAT.Response());
+        has_collided = SAT.testPolygonPolygon(_this.bee.bounding_box, flower.bounding_box, collision_response = new SAT.Response());
+        return has_collided;
       });
       if (this.current_flower) {
         this.bee.is_flying = false;
@@ -91,7 +90,7 @@
     };
 
     World.prototype.render = function(helper) {
-      this.update();
+      this.update(helper);
       this.background.render(helper);
       _.invoke(this.flowers, 'render', helper);
       return this.bee.render(helper);

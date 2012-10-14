@@ -9,7 +9,7 @@ class window.Bee
 
   constructor: (@options) ->
     { x, y } = @options
-    @position = new SAT.Vector(x, y)
+    @position = @last_position = new SAT.Vector(x, y)
     @half_size = @size / 2
 
     @velocity = new SAT.Vector()
@@ -28,6 +28,7 @@ class window.Bee
     @acceleration.add(@gravity)
 
     @velocity.add(@acceleration)
+    @last_position = (new SAT.Vector()).copy(@position)
     @position.add(@velocity)
     @update_bounding_box()
     @velocity.scale(@drag, @drag)
