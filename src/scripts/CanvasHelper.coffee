@@ -84,7 +84,10 @@ class window.CanvasHelper
 
   step: (timestamp) =>
     @clear()
-    @render_callback.call(this)
+    time = Date.now()
+    @last_time = time if not @last_time
+    @render_callback time - @last_time
+    @last_time = time
     @ticks++
     @get_animation_frame()(@step, @canvas)
 

@@ -39,7 +39,7 @@ helper = new CanvasHelper(document.getElementById('game'))
 world = new World(helper, {
   bee: {
     x: 264,
-    y: helper.height - 290
+    y: helper.height - 310
   },
   backgrounds: [{
     src: 'images/bkg_0.png',
@@ -84,9 +84,11 @@ world = new World(helper, {
   }],
   obstacles: [
     new SAT.Box(new SAT.Vector(10, 10), 30, 200).toPolygon()
-    new SAT.Box(new SAT.Vector(helper.half_width + 500, 10), 30, 200).toPolygon()
+    new SAT.Box(new SAT.Vector(helper.half_width + 450, 10), 300, 30).toPolygon()
+    new SAT.Box(new SAT.Vector(helper.half_width + 450, 200), 300, 30).toPolygon()
+    new SAT.Box(new SAT.Vector(helper.half_width + 700, 10), 30, 200).toPolygon()
   ]
 })
 
-helper.render ->
-  world.render(helper)
+helper.render (delta) ->
+  world.render(helper, delta)
