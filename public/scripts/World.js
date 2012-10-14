@@ -31,6 +31,7 @@
         init_mouse.y = mouse.y = e.clientY + _this.camera.y;
         _this.is_dragging = _this.current_target.contains(mouse);
         if (_this.is_dragging) {
+          _this.bee.thinking = null;
           return soundManager.play('stretch');
         }
       });
@@ -78,6 +79,7 @@
         background.x = 0;
       }
       this.bee = new Bee(this.options.bee);
+      this.bee.thinking = 'hive';
       this.targets = _.map(this.options.targets, function(options) {
         return new Flower(options);
       });
@@ -115,13 +117,14 @@
     };
 
     World.prototype.simulate = function(dt) {
-      var collision_response, current_obstacle, offset,
+      var collision_response, current_obstacle, offset, old_current_target,
         _this = this;
       this.bee.simulate(dt);
       if (!this.bee.is_flying) {
         return;
       }
       collision_response = null;
+      old_current_target = this.current_target;
       this.current_target = _.find(this.targets, function(flower) {
         var has_collided;
         if (flower === _this.current_target) {
@@ -133,13 +136,26 @@
       if (this.current_target) {
         soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
         soundManager.stop('buzz');
+        if (!this.current_target.hit) {
+          if (this.current_target.final) {
+            this.bee.points += 100;
+          } else {
+            this.bee.points += 50;
+          }
+        }
+        this.current_target.hit = true;
         if (this.current_target.final) {
+          this.bee.thinking = 'points';
+          this.bee.points += this.bee.lives * 100;
           soundManager.stop('background');
           soundManager.play('victory', {
             onfinish: function() {
-              return soundManager.play('background');
+              soundManager.play('background');
+              return _this.reset_game();
             }
           });
+        } else {
+          this.bee.thinking = 'points';
         }
         if (this.bee.distance > 30) {
           this.bee.is_flying = false;
@@ -157,7 +173,11 @@
         soundManager.play("bounce" + (Math.floor(Math.random() * 3) + 1));
         offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
         this.bee.position.add(offset);
-        return this.bee.velocity.reflectN(collision_response.overlapN.perp()).scale(this.bounce_factor);
+        this.bee.velocity.reflectN(collision_response.overlapN.perp()).scale(this.bounce_factor);
+        if (!current_obstacle.hit) {
+          this.bee.points += 20;
+        }
+        return current_obstacle.hit = true;
       }
     };
 

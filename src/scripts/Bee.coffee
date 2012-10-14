@@ -1,9 +1,14 @@
 class window.Bee
   precision: 10
   drag: 0.1
+  lives: 3
 
   is_flying: false
   distance: 0
+
+  points: 0
+
+  thinking: null
 
   gravity: new SAT.Vector(0, 900)
 
@@ -15,6 +20,12 @@ class window.Bee
 
     @image = new Image()
     @image.src = @src
+
+    @hive_image = new Image()
+    @hive_image.src = 'images/thought_hive.png'
+
+    @thought_image = new Image()
+    @thought_image.src = 'images/thought.png'
 
     @position = @last_position = new SAT.Vector(x, y)
 
@@ -50,7 +61,6 @@ class window.Bee
     @update_bounding_box()
 
   evaluate: (dt, deriv) ->
-
     initial_pos = (new SAT.Vector()).copy(@position)
     initial_vel = (new SAT.Vector()).copy(@velocity)
 
@@ -67,5 +77,20 @@ class window.Bee
     helper.save()
     helper.translate(@position.x, @position.y)
     helper.translate(@drag_dx.x, @drag_dx.y) if @drag_dx
-    helper.render_image(@image, -@half_width, -@half_height, @width, @height)
+    helper.translate(-@half_width, -@half_height)
+    helper.render_image(@image, 0, 0, @width, @height)
+
+    if @thinking
+      helper.save()
+      if @thinking is 'hive'
+        helper.translate(40, -60)
+        helper.render_image(@thought_image, 0, 0, 105, 80)
+        helper.render_image(@hive_image, 25, 12, 45, 30)
+      else if @thinking is 'points'
+        helper.fill('rgb(145, 126, 52)')
+        helper.translate(40, -80)
+        helper.render_image(@thought_image, 0, 0, 135, 100)
+        helper.text("+#{@points}", 68, 38, font='28px "Sniglet", cursive', null, 'center', 'middle')
+      helper.restore()
+
     helper.restore()

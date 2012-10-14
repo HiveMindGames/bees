@@ -24,6 +24,7 @@ class window.World
       @is_dragging = @current_target.contains(mouse)
 
       if @is_dragging
+        @bee.thinking = null
         soundManager.play('stretch')
 
     $(@helper.canvas).on 'mouseup', (e) =>
@@ -61,6 +62,7 @@ class window.World
       background.x = 0
 
     @bee = new Bee(@options.bee)
+    @bee.thinking = 'hive'
     @targets = _.map @options.targets, (options) ->
       return new Flower(options)
     @current_target = @targets[0]
@@ -87,6 +89,8 @@ class window.World
 
     collision_response = null
 
+    old_current_target = @current_target
+
     @current_target = _.find @targets, (flower) =>
       if flower is @current_target
         return false
@@ -102,12 +106,25 @@ class window.World
       soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
       soundManager.stop('buzz')
 
+      unless @current_target.hit
+        if @current_target.final
+          @bee.points += 100
+        else
+          @bee.points += 50
+
+      @current_target.hit = true
+
       if @current_target.final
+        @bee.thinking = 'points'
+        @bee.points += @bee.lives * 100
         soundManager.stop('background')
         soundManager.play('victory', {
-          onfinish: ->
+          onfinish: =>
             soundManager.play('background')
+            @reset_game()
         })
+      else
+        @bee.thinking = 'points'
 
       if @bee.distance > 30
         @bee.is_flying = false
@@ -130,7 +147,10 @@ class window.World
       @bee.position.add(offset)
       @bee.velocity.reflectN(collision_response.overlapN.perp()).scale(@bounce_factor)
 
+      unless current_obstacle.hit
+        @bee.points += 20
 
+      current_obstacle.hit = true
 
   render: (helper, delta) ->
     dt = 30
@@ -154,7 +174,6 @@ class window.World
     _.invoke(@obstacles, 'render', helper)
     @bee.render(helper)
     @helper.restore()
-
 
   position_camera: ->
     dest = (new SAT.Vector()).copy(@bee.position).sub(new SAT.Vector(@helper.width/2, @helper.height/2))
