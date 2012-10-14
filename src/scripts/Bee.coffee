@@ -8,7 +8,7 @@ class window.Bee
 
   points: 0
 
-  thinking: null
+  thinking: 'hive'
 
   gravity: new SAT.Vector(0, 900)
 

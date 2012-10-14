@@ -14,7 +14,7 @@
 
     Bee.prototype.points = 0;
 
-    Bee.prototype.thinking = null;
+    Bee.prototype.thinking = 'hive';
 
     Bee.prototype.gravity = new SAT.Vector(0, 900);
 

@@ -68,8 +68,13 @@ class window.World
     for background in @background
       background.x = 0
 
-    @bee = new Bee(@options.bee)
-    @bee.thinking = 'hive'
+    new_bee = new Bee(@options.bee)
+
+    if @bee and @bee.lives > 1
+      new_bee.lives = --@bee.lives
+
+    @bee = new_bee
+
     soundManager.play('thoughtbubble')
     @targets = _.map @options.targets, (options) ->
       return new Flower(options)
@@ -190,6 +195,10 @@ class window.World
     @bee.render(helper)
     @collision.render(helper) if @collision
     @helper.restore()
+
+    helper.fill('#00a')
+    helper.text("points: #{@bee.points}", 32, helper.height - 64, font='28px "Sniglet", cursive', null, 'left', 'middle')
+    helper.text("lives: #{@bee.lives}", 32, helper.height - 32, font='28px "Sniglet", cursive', null, 'left', 'middle')
 
   position_camera: ->
     dest = (new SAT.Vector()).copy(@bee.position).sub(new SAT.Vector(@helper.width/2, @helper.height/2))

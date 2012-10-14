@@ -76,7 +76,7 @@
     }
 
     World.prototype.reset_game = function() {
-      var background, poly, _i, _len, _ref;
+      var background, new_bee, poly, _i, _len, _ref;
       soundManager.stop('buzz');
       this.accumulator = 0;
       this.time = 0;
@@ -85,8 +85,11 @@
         background = _ref[_i];
         background.x = 0;
       }
-      this.bee = new Bee(this.options.bee);
-      this.bee.thinking = 'hive';
+      new_bee = new Bee(this.options.bee);
+      if (this.bee && this.bee.lives > 1) {
+        new_bee.lives = --this.bee.lives;
+      }
+      this.bee = new_bee;
       soundManager.play('thoughtbubble');
       this.targets = _.map(this.options.targets, function(options) {
         return new Flower(options);
@@ -198,7 +201,7 @@
     };
 
     World.prototype.render = function(helper, delta) {
-      var dt;
+      var dt, font;
       dt = 30;
       if (delta > 250) {
         delta = 250;
@@ -220,7 +223,10 @@
       if (this.collision) {
         this.collision.render(helper);
       }
-      return this.helper.restore();
+      this.helper.restore();
+      helper.fill('#00a');
+      helper.text("points: " + this.bee.points, 32, helper.height - 64, font = '28px "Sniglet", cursive', null, 'left', 'middle');
+      return helper.text("lives: " + this.bee.lives, 32, helper.height - 32, font = '28px "Sniglet", cursive', null, 'left', 'middle');
     };
 
     World.prototype.position_camera = function() {
