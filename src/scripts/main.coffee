@@ -88,7 +88,7 @@ for i in [0..target_count]
     })
   else if i is 0
     targets.push({
-      src: 'images/petals.png',
+      src: "images/petals_#{Math.floor(Math.random() * 3)}.png",
       width: 128,
       height: 64,
       position: new SAT.Vector(((helper.half_width / 2) * i) + 200, helper.height),
@@ -97,7 +97,7 @@ for i in [0..target_count]
     })
   else
     targets.push({
-      src: 'images/petals.png',
+      src: "images/petals_#{Math.floor(Math.random() * 3)}.png",
       width: 128,
       height: 64,
       position: new SAT.Vector(((helper.half_width / 2) * i) + 200, helper.height),
