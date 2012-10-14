@@ -3,7 +3,7 @@ class window.Flower
   stem_thickness: 10
 
   constructor: (@options={}) ->
-    { @src, @petal_width, @petal_height, @position, @stem_height, @angle } = @options
+    { @final, @src, @width, @height, @position, @stem_height, @angle } = @options
 
     @image = new Image()
     @image.src = @src
@@ -11,18 +11,18 @@ class window.Flower
     @half_stem_height = @stem_height / 2
     @angle = Utils.degToRad(@angle)
 
-    @half_petal_width = @petal_width / 2
-    @half_petal_height = @petal_height / 2
+    @half_width = @width / 2
+    @half_height = @height / 2
 
     @petal_position = Utils.rotateVector(new SAT.Vector(0, -@stem_height), @angle)
       .add(@position)
     @update_bounding_box()
 
   contains: (mouse) ->
-    mousePos = new SAT.Vector(mouse.x - @bounding_box.pos.x, mouse.y -
-      @bounding_box.pos.y)
+    mousePos = new SAT.Vector(mouse.x - @mouse_box.pos.x, mouse.y -
+      @mouse_box.pos.y)
 
-    { points } = @bounding_box
+    { points } = @mouse_box
     { length } = points
 
     pairs = ([point, points[(i+1)%length]] for point, i in points)
@@ -35,15 +35,25 @@ class window.Flower
       return (edge.x * to_mouse.y - to_mouse.x * edge.y) < 0
 
   update_bounding_box: ->
-    half_width = @half_petal_width - @precision
-    half_height = @half_petal_height - @precision
+    half_width = @half_width - @precision
+    half_height = @half_height - @precision
+    offset = 20
     @bounding_box = new SAT.Polygon(@petal_position, [
+      Utils.rotateVector(new SAT.Vector(0, -half_height/2 - offset), @angle)
+      Utils.rotateVector(new SAT.Vector(half_width, half_height - offset), @angle)
+      Utils.rotateVector(new SAT.Vector(-half_width, half_height - offset), @angle)
+    ])
+    @mouse_box = new SAT.Polygon(@petal_position, [
       Utils.rotateVector(new SAT.Vector(-half_width, -half_height), @angle)
       Utils.rotateVector(new SAT.Vector(half_width, -half_height), @angle)
       Utils.rotateVector(new SAT.Vector(half_width, half_height), @angle)
       Utils.rotateVector(new SAT.Vector(-half_width, half_height), @angle)
     ])
-    @bounding_box.recalc()
+
+  is_back_normal: (vec) ->
+    normal = Utils.rotateVector(new SAT.Vector(0, 1), @angle)
+
+    return (vec.x * normal.x + normal.y * vec.y) > 0
 
   render: (helper) ->
     # stem
@@ -71,5 +81,11 @@ class window.Flower
     helper.translate(@position.x, @position.y)
     helper.rotate(@angle)
     helper.translate(0, -@stem_height)
-    helper.render_image(@image, -@half_petal_width, -@half_petal_height, @petal_width, @petal_height)
+    helper.render_image(@image, -@half_width, -@half_height, @width, @height)
     helper.restore()   
+
+    # Draw Bounding box
+    #helper.save()
+    #helper.translate(@petal_position.x, @petal_position.y)
+    #helper.polygon(@bounding_box.points)
+    #helper.restore()

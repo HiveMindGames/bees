@@ -1,5 +1,5 @@
 (function() {
-  var helper, world;
+  var helper, i, target_count, targets, world, _i;
 
   soundManager.setup({
     url: './swf/',
@@ -48,9 +48,30 @@
         autoPlay: false,
         volume: 50
       });
-      return soundManager.createSound({
+      soundManager.createSound({
         id: 'spring',
         url: './sounds/spring.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 50
+      });
+      soundManager.createSound({
+        id: 'victory',
+        url: './sounds/victory.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 50
+      });
+      soundManager.createSound({
+        id: 'collision',
+        url: './sounds/collision.mp3',
+        autoLoad: true,
+        autoPlay: false,
+        volume: 50
+      });
+      return soundManager.createSound({
+        id: 'thoughtbubble',
+        url: './sounds/thoughtbubble.mp3',
         autoLoad: true,
         autoPlay: false,
         volume: 50
@@ -60,11 +81,29 @@
 
   helper = new CanvasHelper(document.getElementById('game'));
 
+  targets = [];
+
+  target_count = 4;
+
+  for (i = _i = 0; 0 <= target_count ? _i <= target_count : _i >= target_count; i = 0 <= target_count ? ++_i : --_i) {
+    targets.push({
+      src: 'images/petals.png',
+      width: 128,
+      height: 64,
+      position: new SAT.Vector(((helper.half_width / 2) * i) + 200, helper.height),
+      stem_height: helper.half_height / 2,
+      angle: i === 0 ? 10 : Math.floor(15 - (Math.random() * 30)),
+      final: i === target_count
+    });
+  }
+
   world = new World(helper, {
+    width: helper.width * 2,
+    height: helper.height,
     bee: {
       src: 'images/bee.png',
-      x: 264,
-      y: helper.height - 290,
+      x: 256,
+      y: (helper.half_height * 1.5) - 48,
       width: 64,
       height: 74
     },
@@ -107,31 +146,8 @@
         increment: 4
       }
     ],
-    flowers: [
-      {
-        src: 'images/petals.png',
-        petal_width: 128,
-        petal_height: 64,
-        position: new SAT.Vector(200, helper.height),
-        stem_height: 240,
-        angle: 15
-      }, {
-        src: 'images/petals.png',
-        petal_width: 128,
-        petal_height: 64,
-        position: new SAT.Vector(helper.half_width - 200, helper.height),
-        stem_height: 240,
-        angle: 5
-      }, {
-        src: 'images/petals.png',
-        petal_width: 128,
-        petal_height: 64,
-        position: new SAT.Vector(helper.half_width + 350, helper.height),
-        stem_height: 240,
-        angle: -25
-      }
-    ],
-    obstacles: [new SAT.Box(new SAT.Vector(10, 10), 30, 200).toPolygon(), new SAT.Box(new SAT.Vector(helper.half_width + 450, 10), 300, 30).toPolygon(), new SAT.Box(new SAT.Vector(helper.half_width + 450, 200), 300, 30).toPolygon(), new SAT.Box(new SAT.Vector(helper.half_width + 700, 10), 30, 200).toPolygon()]
+    targets: targets,
+    obstacles: []
   });
 
   helper.render(function(delta) {

@@ -6,9 +6,15 @@
 
     Bee.prototype.drag = 0.1;
 
+    Bee.prototype.lives = 3;
+
     Bee.prototype.is_flying = false;
 
     Bee.prototype.distance = 0;
+
+    Bee.prototype.points = 0;
+
+    Bee.prototype.thinking = 'hive';
 
     Bee.prototype.gravity = new SAT.Vector(0, 900);
 
@@ -20,6 +26,10 @@
       this.half_height = this.height / 2;
       this.image = new Image();
       this.image.src = this.src;
+      this.hive_image = new Image();
+      this.hive_image.src = 'images/thought_hive.png';
+      this.thought_image = new Image();
+      this.thought_image.src = 'images/thought.png';
       this.position = this.last_position = new SAT.Vector(x, y);
       this.velocity = new SAT.Vector();
       this.acceleration = new SAT.Vector();
@@ -64,12 +74,28 @@
     };
 
     Bee.prototype.render = function(helper) {
+      var font;
       helper.save();
       helper.translate(this.position.x, this.position.y);
       if (this.drag_dx) {
         helper.translate(this.drag_dx.x, this.drag_dx.y);
       }
-      helper.render_image(this.image, -this.half_width, -this.half_height, this.width, this.height);
+      helper.translate(-this.half_width, -this.half_height);
+      helper.render_image(this.image, 0, 0, this.width, this.height);
+      if (this.thinking) {
+        helper.save();
+        if (this.thinking === 'hive') {
+          helper.translate(40, -60);
+          helper.render_image(this.thought_image, 0, 0, 105, 80);
+          helper.render_image(this.hive_image, 25, 12, 45, 30);
+        } else if (this.thinking === 'points') {
+          helper.fill('rgb(145, 126, 52)');
+          helper.translate(40, -80);
+          helper.render_image(this.thought_image, 0, 0, 135, 100);
+          helper.text("+" + this.points, 68, 38, font = '28px "Sniglet", cursive', null, 'center', 'middle');
+        }
+        helper.restore();
+      }
       return helper.restore();
     };
 

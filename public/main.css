@@ -2,3 +2,15 @@ body {
   margin: 0;
   overflow: hidden;
 }
+
+a {
+  display: block;
+  width: 100px;
+  height: 100px;
+  position: fixed;
+}
+
+a#replay {
+  bottom: 32px;
+  right: 32px;
+}
