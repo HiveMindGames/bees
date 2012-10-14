@@ -18,7 +18,7 @@ class window.World
       if is_dragging
         is_dragging = false
         @bee.is_flying = true
-        @bee.acceleration.sub(mouse_dx)
+        @bee.acceleration.sub(mouse_dx) if mouse_dx
 
     $(@helper.canvas).on 'mousemove', (e) =>
       unless is_dragging

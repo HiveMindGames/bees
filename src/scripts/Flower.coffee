@@ -12,30 +12,20 @@ class window.Flower
     @update_bounding_box()
 
   contains: (mouse) ->
-    { x, y } = mouse
+    mousePos = new SAT.Vector(mouse.x - @bounding_box.pos.x, mouse.y -
+      @bounding_box.pos.y)
 
-    inside = false
     { points } = @bounding_box
     { length } = points
-    max = length - 1
-    i = 0
 
-    while i < length
-      xi = points[i].x
-      yi = points[i].y
-      xj = points[max].x
-      yj = points[max].y
-      console.warn xi, yi, xj, yj
+    pairs = ([point, points[(i+1)%length]] for point, i in points)
 
-      intersect = (yi > y isnt yj > y) and
-        (x < (xj - xi) * (y - yi) / (yj - yi) + xi)
+    return _.every pairs, (pair) ->
+      edge = (new SAT.Vector()).copy(pair[1]).sub pair[0]
+      to_mouse = (new SAT.Vector()).copy(pair[1]).sub mousePos
 
-      console.warn 'intersect', intersect
-      inside = not inside if intersect
-      max = i++
-
-    console.warn 'inside', inside
-    return inside
+      # Cross product to find what side of the edge the mouse is on.
+      return (edge.x * to_mouse.y - to_mouse.x * edge.y) < 0
 
   update_bounding_box: ->
     @rotated_position = Utils.rotateVector(new SAT.Vector(0, -@stem_height), @angle)
@@ -45,8 +35,8 @@ class window.Flower
     ), [
       Utils.rotateVector(new SAT.Vector(-@half_petal_width, -@half_petal_height), @angle)
       Utils.rotateVector(new SAT.Vector(@half_petal_width, -@half_petal_height), @angle)
-      Utils.rotateVector(new SAT.Vector(-@half_petal_width, @half_petal_height), @angle)
       Utils.rotateVector(new SAT.Vector(@half_petal_width, @half_petal_height), @angle)
+      Utils.rotateVector(new SAT.Vector(-@half_petal_width, @half_petal_height), @angle)
     ])
     @bounding_box.recalc()
 
