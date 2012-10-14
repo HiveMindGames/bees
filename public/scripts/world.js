@@ -48,7 +48,7 @@
     }
 
     World.prototype.new_game = function() {
-      var background, option, _i, _len, _ref;
+      var background, option, poly, _i, _len, _ref;
       _ref = this.options.backgrounds;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         background = _ref[_i];
@@ -65,11 +65,21 @@
         }
         return _results;
       }).call(this);
-      return this.current_flower = this.flowers[0];
+      this.current_flower = this.flowers[0];
+      return this.obstacles = (function() {
+        var _j, _len1, _ref1, _results;
+        _ref1 = this.options.obstacles;
+        _results = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          poly = _ref1[_j];
+          _results.push(new Obstacle(poly));
+        }
+        return _results;
+      }).call(this);
     };
 
     World.prototype.update = function(helper) {
-      var background, collision_response, offset, _i, _len, _ref,
+      var background, collision_response, current_obstacle, offset, _i, _len, _ref,
         _this = this;
       if (!this.bee.is_flying) {
         return;
@@ -100,6 +110,12 @@
         this.bee.position.add(offset);
         this.bee.velocity.add(offset);
       }
+      current_obstacle = _.find(this.obstacles, function(obstacle) {
+        return SAT.testPolygonPolygon(_this.bee.bounding_box, obstacle.poly, collision_response = new SAT.Response());
+      });
+      if (current_obstacle) {
+        this.bee.velocity.reflectN(collision_response.overlapN.perp());
+      }
       if (this.bee.position.y > this.helper.height) {
         return this.new_game();
       }
@@ -109,6 +125,7 @@
       this.update(helper);
       this.background.render(helper);
       _.invoke(this.flowers, 'render', helper);
+      _.invoke(this.obstacles, 'render', helper);
       return this.bee.render(helper);
     };
 

@@ -45,7 +45,11 @@ world = new World(helper, {
     position: new SAT.Vector(helper.half_width + 350, helper.height),
     stem_height: 240,
     angle: -25
-  }]
+  }],
+  obstacles: [
+    new SAT.Box(new SAT.Vector(10, 10), 30, 200).toPolygon()
+    new SAT.Box(new SAT.Vector(helper.half_width + 500, 10), 30, 200).toPolygon()
+  ]
 })
 
 helper.render ->

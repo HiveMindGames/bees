@@ -184,6 +184,19 @@
       }
     };
 
+    CanvasHelper.prototype.polygon = function(points) {
+      var i, _i, _ref;
+      this.context.beginPath();
+      this.context.moveTo(points[0].x, points[0].y);
+      for (i = _i = 1, _ref = points.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
+        this.context.lineTo(points[i].x, points[i].y);
+      }
+      this.context.closePath();
+      if (this.should_fill) {
+        return this.context.fill();
+      }
+    };
+
     CanvasHelper.prototype.get_animation_frame = function() {
       return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || function(callback, element) {
         return window.setTimeout(callback, 1000 / 60);

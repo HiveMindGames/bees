@@ -67,6 +67,13 @@ class window.CanvasHelper
     @context.fill() if @should_fill
     @context.stroke() if @should_stroke
 
+  polygon: (points) ->
+    @context.beginPath()
+    @context.moveTo(points[0].x, points[0].y)
+    @context.lineTo(points[i].x, points[i].y) for i in [1...points.length]
+    @context.closePath()
+    @context.fill() if @should_fill
+
   get_animation_frame: ->
     return window.requestAnimationFrame or
            window.webkitRequestAnimationFrame or

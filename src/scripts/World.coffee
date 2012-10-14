@@ -42,6 +42,7 @@ class window.World
     @bee = new Bee(@options.bee)
     @flowers = (new Flower(option) for option in @options.flowers)
     @current_flower = @flowers[0]
+    @obstacles = (new Obstacle(poly) for poly in @options.obstacles)
 
   update: (helper) ->
     return unless @bee.is_flying
@@ -72,6 +73,16 @@ class window.World
       @bee.position.add(offset)
       @bee.velocity.add(offset)
 
+    current_obstacle = _.find @obstacles, (obstacle) =>
+      return SAT.testPolygonPolygon(
+        @bee.bounding_box,
+        obstacle.poly,
+        collision_response = new SAT.Response()
+      )
+
+    if current_obstacle
+      @bee.velocity.reflectN(collision_response.overlapN.perp())
+
     if @bee.position.y > @helper.height
       @new_game()
 
@@ -80,4 +91,5 @@ class window.World
 
     @background.render(helper)
     _.invoke(@flowers, 'render', helper)
+    _.invoke(@obstacles, 'render', helper)
     @bee.render(helper)
