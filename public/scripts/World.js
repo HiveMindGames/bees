@@ -172,6 +172,10 @@
       if (current_obstacle) {
         soundManager.play('collision');
         offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
+        this.collision = new Collision((new SAT.Vector()).copy(this.bee.position));
+        setTimeout(function() {
+          return _this.collision = null;
+        }, 500);
         this.bee.position.add(offset);
         this.bee.velocity.reflectN(collision_response.overlapN.perp()).scale(this.bounce_factor);
         if (!current_obstacle.hit) {
@@ -201,6 +205,9 @@
       _.invoke(this.targets, 'render', helper);
       _.invoke(this.obstacles, 'render', helper);
       this.bee.render(helper);
+      if (this.collision) {
+        this.collision.render(helper);
+      }
       return this.helper.restore();
     };
 

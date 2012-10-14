@@ -144,6 +144,10 @@ class window.World
     if current_obstacle
       soundManager.play('collision')
       offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse()
+      @collision = new Collision((new SAT.Vector()).copy(@bee.position))
+      setTimeout =>
+        @collision = null
+      , 500
       @bee.position.add(offset)
       @bee.velocity.reflectN(collision_response.overlapN.perp()).scale(@bounce_factor)
 
@@ -173,6 +177,7 @@ class window.World
     _.invoke(@targets, 'render', helper)
     _.invoke(@obstacles, 'render', helper)
     @bee.render(helper)
+    @collision.render(helper) if @collision
     @helper.restore()
 
   position_camera: ->
