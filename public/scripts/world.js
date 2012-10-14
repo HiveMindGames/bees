@@ -25,6 +25,8 @@
         init_mouse.y = mouse.y = e.clientY;
         _this.is_dragging = _this.current_flower.contains(mouse);
         if (_this.is_dragging) {
+          _this.bee.position.x = _this.current_flower.bounding_box.pos.x;
+          _this.bee.position.y = _this.current_flower.bounding_box.pos.y - _this.current_flower.half_petal_height;
           return soundManager.play('stretch');
         }
       });

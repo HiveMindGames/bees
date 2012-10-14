@@ -66,7 +66,6 @@ class window.Bee
   render: (helper) ->
     helper.save()
     helper.translate(@position.x, @position.y)
-    if @drag_dx
-      helper.translate(@drag_dx.x, @drag_dx.y)
+    helper.translate(@drag_dx.x, @drag_dx.y) if @drag_dx
     helper.render_image(@image, -@half_width, -@half_height, @width, @height)
     helper.restore()

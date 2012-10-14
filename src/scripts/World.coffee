@@ -18,6 +18,8 @@ class window.World
       init_mouse.y = mouse.y = e.clientY
       @is_dragging = @current_flower.contains(mouse)
       if @is_dragging
+        @bee.position.x = @current_flower.bounding_box.pos.x
+        @bee.position.y = @current_flower.bounding_box.pos.y - @current_flower.half_petal_height
         soundManager.play('stretch')
 
     $(@helper.canvas).on 'mouseup', (e) =>
@@ -112,7 +114,6 @@ class window.World
 
     if current_obstacle
       soundManager.play("bounce#{Math.floor(Math.random() * 3) + 1}")
-
       offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse()
       @bee.position.add(offset)
       @bee.velocity.reflectN(collision_response.overlapN.perp()).scale(@bounce_factor)
