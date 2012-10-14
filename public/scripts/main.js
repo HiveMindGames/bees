@@ -1,27 +1,25 @@
 (function() {
-  var bee, flower, helper, init_mouse, is_dragging, mouse, mouse_dx, world;
+  var bee, collision_response, flower, has_collided, helper, init_mouse, is_dragging, mouse, mouse_dx, update, world;
 
   helper = new CanvasHelper(document.getElementById('game'));
 
   world = new World();
 
-  bee = new Bee();
+  bee = new Bee(new SAT.Vector(264, helper.half_height));
 
   flower = new Flower({
     petal_width: 128,
     petal_height: 64,
-    position: new Vector(helper.width - 400, helper.height),
+    position: new SAT.Vector(helper.half_width, helper.height),
     stem_height: 240,
     angle: -25
   });
 
-  bee.position.x = bee.size + 200;
+  collision_response = new SAT.Response();
 
-  bee.position.y = helper.half_height;
+  init_mouse = new SAT.Vector();
 
-  init_mouse = new Vector();
-
-  mouse = new Vector();
+  mouse = new SAT.Vector();
 
   is_dragging = false;
 
@@ -37,7 +35,7 @@
     if (is_dragging) {
       is_dragging = false;
       bee.is_flying = true;
-      return bee.acceleration.subtract(mouse_dx);
+      return bee.acceleration.sub(mouse_dx);
     }
   });
 
@@ -47,10 +45,28 @@
     }
     mouse.x = e.clientX;
     mouse.y = e.clientY;
-    return mouse_dx = Vector.subtract(mouse, init_mouse);
+    return mouse_dx = new SAT.Vector().copy(mouse).sub(init_mouse);
   });
 
+  has_collided = false;
+
+  update = function() {
+    var offset;
+    if (has_collided) {
+      return;
+    }
+    has_collided = SAT.testPolygonPolygon(bee.bounding_box, flower.bounding_box, collision_response);
+    if (has_collided) {
+      bee.is_flying = false;
+      offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
+      bee.position.add(offset);
+      bee.velocity.add(offset);
+      return console.warn(has_collided, collision_response);
+    }
+  };
+
   helper.render(function() {
+    update();
     world.render(helper);
     flower.render(helper);
     return bee.render(helper);

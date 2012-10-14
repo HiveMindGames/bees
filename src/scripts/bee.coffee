@@ -5,14 +5,15 @@ class window.Bee
   
   is_flying: false
 
-  gravity: new Vector(0, 1)
+  gravity: new SAT.Vector(0, 1)
 
-  constructor: ->
+  constructor: (@position=new SAT.Vector()) ->
     @half_size = @size / 2
 
-    @position = new Vector()
-    @velocity = new Vector()
-    @acceleration = new Vector()
+    @velocity = new SAT.Vector()
+    @acceleration = new SAT.Vector()
+
+    @update_bounding_box()
 
   contains: (mouse) ->
     { x, y } = mouse
@@ -21,18 +22,24 @@ class window.Bee
       y > (@position.y - @half_size) and
       y < (@position.y + @half_size)
 
-  update: ->
-    @acceleration.multiply_scalar(@deceleration)
+  update_bounding_box: ->
+    @bounding_box = (new SAT.Box(new SAT.Vector(
+      @position.x - @half_size,
+      @position.y - @half_size
+    ), @size, @size)).toPolygon()
 
-    if @is_flying
-      @acceleration.add(@gravity)
+  update: ->
+    @acceleration.scale(@deceleration, @deceleration)
+    @acceleration.add(@gravity)
 
     @velocity.add(@acceleration)
     @position.add(@velocity)
-    @velocity.multiply_scalar(@drag)
+    @update_bounding_box()
+    @velocity.scale(@drag, @drag)
 
   render: (helper) ->
-    @update()
+    if @is_flying
+      @update()
 
     helper.fill('#000')
     helper.save()

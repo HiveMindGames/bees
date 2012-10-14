@@ -10,13 +10,14 @@
 
     Bee.prototype.is_flying = false;
 
-    Bee.prototype.gravity = new Vector(0, 1);
+    Bee.prototype.gravity = new SAT.Vector(0, 1);
 
-    function Bee() {
+    function Bee(position) {
+      this.position = position != null ? position : new SAT.Vector();
       this.half_size = this.size / 2;
-      this.position = new Vector();
-      this.velocity = new Vector();
-      this.acceleration = new Vector();
+      this.velocity = new SAT.Vector();
+      this.acceleration = new SAT.Vector();
+      this.update_bounding_box();
     }
 
     Bee.prototype.contains = function(mouse) {
@@ -25,18 +26,23 @@
       return x > (this.position.x - this.half_size) && x < (this.position.x + this.half_size) && y > (this.position.y - this.half_size) && y < (this.position.y + this.half_size);
     };
 
+    Bee.prototype.update_bounding_box = function() {
+      return this.bounding_box = (new SAT.Box(new SAT.Vector(this.position.x - this.half_size, this.position.y - this.half_size), this.size, this.size)).toPolygon();
+    };
+
     Bee.prototype.update = function() {
-      this.acceleration.multiply_scalar(this.deceleration);
-      if (this.is_flying) {
-        this.acceleration.add(this.gravity);
-      }
+      this.acceleration.scale(this.deceleration, this.deceleration);
+      this.acceleration.add(this.gravity);
       this.velocity.add(this.acceleration);
       this.position.add(this.velocity);
-      return this.velocity.multiply_scalar(this.drag);
+      this.update_bounding_box();
+      return this.velocity.scale(this.drag, this.drag);
     };
 
     Bee.prototype.render = function(helper) {
-      this.update();
+      if (this.is_flying) {
+        this.update();
+      }
       helper.fill('#000');
       helper.save();
       helper.translate(this.position.x, this.position.y);

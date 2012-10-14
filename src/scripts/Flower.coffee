@@ -6,6 +6,24 @@ class window.Flower
     @half_stem_height = @stem_height / 2
     @angle = Utils.degToRad(@angle)
 
+    @half_petal_width = @petal_width / 2
+    @half_petal_height = @petal_height / 2
+
+    @update_bounding_box()
+
+  update_bounding_box: ->
+    @rotated_position = Utils.rotateVector(new SAT.Vector(0, -@stem_height), @angle)
+    @bounding_box = new SAT.Polygon(new SAT.Vector(
+      @position.x + @rotated_position.x
+      @position.y + @rotated_position.y
+    ), [
+      Utils.rotateVector(new SAT.Vector(-@half_petal_width, -@half_petal_height), @angle)
+      Utils.rotateVector(new SAT.Vector(@half_petal_width, -@half_petal_height), @angle)
+      Utils.rotateVector(new SAT.Vector(-@half_petal_width, @half_petal_height), @angle)
+      Utils.rotateVector(new SAT.Vector(@half_petal_width, @half_petal_height), @angle)
+    ])
+    @bounding_box.recalc()
+
   render: (helper) ->
     # stem
     helper.fill('#080')
