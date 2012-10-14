@@ -150,6 +150,7 @@
         if (!this.current_target.hit) {
           if (this.current_target.final) {
             this.bee.points += 100;
+            this.bee.points += this.bee.lives * 100;
           } else {
             this.bee.points += 50;
           }
@@ -158,7 +159,7 @@
         this.bee.thinking = 'points';
         soundManager.play('thoughtbubble');
         if (this.current_target.final) {
-          this.bee.points += this.bee.lives * 100;
+          this.current_target = null;
           soundManager.stop('background');
           soundManager.play('victory', {
             onfinish: function() {
@@ -166,6 +167,8 @@
               return _this.reset_game();
             }
           });
+          this.bee.is_flying = false;
+          return;
         }
         if (this.bee.distance > 30) {
           offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();

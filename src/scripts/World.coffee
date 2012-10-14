@@ -122,6 +122,7 @@ class window.World
       unless @current_target.hit
         if @current_target.final
           @bee.points += 100
+          @bee.points += @bee.lives * 100
         else
           @bee.points += 50
 
@@ -130,13 +131,15 @@ class window.World
       soundManager.play('thoughtbubble')
 
       if @current_target.final
-        @bee.points += @bee.lives * 100
+        @current_target = null
         soundManager.stop('background')
         soundManager.play('victory', {
           onfinish: =>
             soundManager.play('background')
             @reset_game()
         })
+        @bee.is_flying = false
+        return
 
       if @bee.distance > 30
         offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse()
