@@ -199,7 +199,7 @@ class window.World
     @collision.render(helper) if @collision
     @helper.restore()
 
-    helper.fill('#00a')
+    helper.fill('#fff')
     helper.text("points: #{@bee.points}", 32, helper.height - 64, font='28px "Sniglet", cursive', null, 'left', 'middle')
     helper.text("lives: #{@bee.lives}", 32, helper.height - 32, font='28px "Sniglet", cursive', null, 'left', 'middle')
 

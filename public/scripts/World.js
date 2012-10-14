@@ -227,7 +227,7 @@
         this.collision.render(helper);
       }
       this.helper.restore();
-      helper.fill('#00a');
+      helper.fill('#fff');
       helper.text("points: " + this.bee.points, 32, helper.height - 64, font = '28px "Sniglet", cursive', null, 'left', 'middle');
       return helper.text("lives: " + this.bee.lives, 32, helper.height - 32, font = '28px "Sniglet", cursive', null, 'left', 'middle');
     };
