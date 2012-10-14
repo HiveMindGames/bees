@@ -18,28 +18,28 @@
         url: './sounds/bounce1.mp3',
         autoLoad: true,
         autoPlay: false,
-        volume: 50
+        volume: 80
       });
       soundManager.createSound({
         id: 'bounce2',
         url: './sounds/bounce2.mp3',
         autoLoad: true,
         autoPlay: false,
-        volume: 50
+        volume: 80
       });
       soundManager.createSound({
         id: 'bounce3',
         url: './sounds/bounce3.mp3',
         autoLoad: true,
         autoPlay: false,
-        volume: 50
+        volume: 80
       });
       soundManager.createSound({
         id: 'buzz',
         url: './sounds/buzz.mp3',
         autoLoad: true,
         autoPlay: false,
-        volume: 20
+        volume: 80
       });
       soundManager.createSound({
         id: 'stretch',
@@ -53,14 +53,14 @@
         url: './sounds/spring.mp3',
         autoLoad: true,
         autoPlay: false,
-        volume: 50
+        volume: 80
       });
       soundManager.createSound({
         id: 'victory',
         url: './sounds/victory.mp3',
         autoLoad: true,
         autoPlay: false,
-        volume: 50
+        volume: 30
       });
       soundManager.createSound({
         id: 'landing',
@@ -74,14 +74,14 @@
         url: './sounds/collision.mp3',
         autoLoad: true,
         autoPlay: false,
-        volume: 50
+        volume: 80
       });
       return soundManager.createSound({
         id: 'thoughtbubble',
         url: './sounds/thoughtbubble.mp3',
         autoLoad: true,
         autoPlay: false,
-        volume: 50
+        volume: 30
       });
     }
   });
