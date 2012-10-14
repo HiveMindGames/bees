@@ -9,33 +9,18 @@
 
     CanvasHelper.prototype.ticks = 0;
 
-    function CanvasHelper(canvas, width, height, viewWidth, viewHeight) {
+    function CanvasHelper(canvas, width, height) {
       this.canvas = canvas != null ? canvas : document.createElement('canvas');
       this.width = width != null ? width : window.innerWidth;
       this.height = height != null ? height : window.innerHeight;
-      this.viewWidth = viewWidth != null ? viewWidth : window.innerWidth;
-      this.viewHeight = viewHeight != null ? viewHeight : window.innerHeight;
       this.step = __bind(this.step, this);
 
-      this.resize(this.width, this.height);
-      this.context = this.canvas.getContext('2d');
-    }
-
-    CanvasHelper.prototype.resize = function(w, h) {
-      if (w == null) {
-        w = this.width;
-      }
-      if (h == null) {
-        h = this.height;
-      }
-      this.width = w;
-      this.height = h;
       this.canvas.width = this.width;
       this.canvas.height = this.height;
+      this.context = this.canvas.getContext('2d');
       this.half_width = this.width / 2;
       this.half_height = this.height / 2;
-      return this.scale = Math.min(this.height / this.viewHeight, this.width / this.viewWidth);
-    };
+    }
 
     CanvasHelper.prototype.no_stroke = function() {
       return this.should_stroke = false;
@@ -239,10 +224,7 @@
       if (!this.last_time) {
         this.last_time = time;
       }
-      this.save();
-      this.context.scale(this.scale, this.scale);
       this.render_callback(time - this.last_time);
-      this.restore();
       this.last_time = time;
       this.ticks++;
       return this.get_animation_frame()(this.step, this.canvas);

@@ -66,7 +66,6 @@ soundManager.setup
 
 helper = new CanvasHelper(document.getElementById('game'))
 
-worldHeight = 600
 targets = []
 target_count = 4
 
@@ -75,21 +74,19 @@ for i in [0..target_count]
     src: 'images/petals.png',
     width: 128,
     height: 64,
-    position: new SAT.Vector(((helper.half_width / 2) * i) + 200, worldHeight),
+    position: new SAT.Vector(((helper.half_width / 2) * i) + 200, helper.height),
     stem_height: helper.half_height / 2,
     angle: if i is 0 then 10 else Math.floor(15 - (Math.random() * 30))
     final: i is target_count
   })
 
 world = new World(helper, {
-  width: 2000,
-  height: worldHeight,
-  viewWidth: 800,
-  viewHeight: 600
+  width: helper.width * 2,
+  height: helper.height
   bee: {
     src: 'images/bee.png',
     x: 256,
-    y: worldHeight - 160
+    y: (helper.half_height * 1.5) - 48
     width: 64
     height: 74
   },
@@ -98,7 +95,7 @@ world = new World(helper, {
       width: 12,
       height: 800,
       x: 0,
-      y: -200,
+      y: 0,
       repeat: true,
       increment: 0
     }, {
@@ -106,28 +103,28 @@ world = new World(helper, {
       width: 1060,
       height: 550,
       x: 0,
-      y: worldHeight - 550,
+      y: 0,
       increment: 1
     }, {
       src: 'images/mountains.png',
       width: 1060,
       height: 250,
       x: 0,
-      y: worldHeight - 250,
+      y: 0,
       increment: 2
     }, {
       src: 'images/hills.png',
       width: 1060,
       height: 180,
       x: 0,
-      y: worldHeight - 180,
+      y: 0,
       increment: 3
     }, {
       src: 'images/trees.png',
       width: 1060,
       height: 180,
       x: 0,
-      y: worldHeight - 180,
+      y: 0,
       increment: 4
   }],
   targets: targets,

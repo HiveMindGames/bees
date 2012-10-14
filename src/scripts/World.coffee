@@ -4,14 +4,11 @@ class window.World
   camera: new SAT.Vector()
 
   constructor: (@helper, @options) ->
-    @helper.viewWidth = @options.viewWidth
-    @helper.viewHeight = @options.viewHeight
-    @helper.resize()
-
     @background = new CompositeBackground(@options.backgrounds)
     @reset_game()
     @translation = new SAT.Vector()
 
+    mouse = new SAT.Vector()
     init_mouse = new SAT.Vector()
     mouse_dx = null
 
@@ -22,13 +19,8 @@ class window.World
     $(@helper.canvas).on 'mousedown', (e) =>
       return unless @current_target
 
-      mouse = new SAT.Vector(e.clientX, e.clientY)
-
-      mouse.scale 1/@helper.scale
-      mouse.add(@camera)
-
-      init_mouse = new SAT.Vector().copy(mouse)
-
+      init_mouse.x = mouse.x = e.clientX + @camera.x
+      init_mouse.y = mouse.y = e.clientY + @camera.y
       @is_dragging = @current_target.contains(mouse)
 
       if @is_dragging
@@ -54,11 +46,8 @@ class window.World
     $(@helper.canvas).on 'mousemove', (e) =>
       return unless @is_dragging
 
-      mouse = new SAT.Vector(e.clientX, e.clientY)
-
-      mouse.scale 1/@helper.scale
-      mouse.add(@camera)
-
+      mouse.x = e.clientX + @camera.x
+      mouse.y = e.clientY + @camera.y
       mouse_dx = new SAT.Vector().copy(mouse).sub(init_mouse)
       @current_target.drag_position = mouse
       @current_target.drag_dx = mouse_dx
@@ -66,15 +55,10 @@ class window.World
 
     $(@helper.canvas).on 'mouseleave', (e) =>
       @is_dragging = false
-      if @current_target
-        @current_target.drag_position = null
-        @current_target.drag_dx = null
+      @current_target.drag_position = null
+      @current_target.drag_dx = null
       @bee.drag_dx = null
       @bee.distance = 0
-
-
-    $(window).on 'resize', (e) =>
-      @helper.resize window.innerWidth, window.innerHeight
 
   reset_game: ->
     soundManager.stop('buzz')
@@ -102,6 +86,11 @@ class window.World
 
     for background in @background.backgrounds
       background.x += (@bee.last_position.x - @bee.position.x) * background.increment
+
+      if background.x < 0
+        background.x += background.width
+      else if background.x + background.width > helper.width
+        background.x -= background.width
 
     if @bee.position.y > @options.height
       @reset_game()
@@ -199,7 +188,7 @@ class window.World
 
     @update(helper)
 
-    @position_camera(helper)
+    @position_camera()
 
     @background.render(helper)
     @helper.save()
@@ -214,14 +203,12 @@ class window.World
     helper.text("points: #{@bee.points}", 32, helper.height - 64, font='28px "Sniglet", cursive', null, 'left', 'middle')
     helper.text("lives: #{@bee.lives}", 32, helper.height - 32, font='28px "Sniglet", cursive', null, 'left', 'middle')
 
-  position_camera: (helper) ->
-    view = (new SAT.Vector(helper.width, helper.height)).scale(1/helper.scale)
-    dest = (new SAT.Vector()).copy(@bee.position).sub((new SAT.Vector()).copy(view).scale(1/2))
-
+  position_camera: ->
+    dest = (new SAT.Vector()).copy(@bee.position).sub(new SAT.Vector(@helper.width/2, @helper.height/2))
 
     dest.x = 0 if dest.x < 0
     dest.y = 0 if dest.y < 0
-    dest.x = @options.width - view.x if dest.x + view.x > @options.width
-    dest.y = @options.height - view.y if dest.y + view.y> @options.height
+    dest.x = @options.width - @helper.width if dest.x + @helper.width > @options.width
+    dest.y = @options.height - @helper.height if dest.y + @helper.height> @options.height
 
     @camera = dest

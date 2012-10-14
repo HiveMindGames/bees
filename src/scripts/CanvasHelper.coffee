@@ -4,24 +4,14 @@ class window.CanvasHelper
   
   ticks: 0
 
-  constructor: (@canvas=document.createElement('canvas'), @width=window.innerWidth, 
-    @height=window.innerHeight, @viewWidth=window.innerWidth, @viewHeight=window.innerHeight) ->
-
-    @resize @width, @height
-
-    @context = @canvas.getContext('2d')
-
-  resize: (w = @width, h = @height) ->
-    @width = w
-    @height = h
-
+  constructor: (@canvas=document.createElement('canvas'), @width=window.innerWidth, @height=window.innerHeight) ->
     @canvas.width = @width
     @canvas.height = @height
 
+    @context = @canvas.getContext('2d')
+
     @half_width = @width / 2
     @half_height = @height / 2
-
-    @scale = Math.min(@height / @viewHeight, @width / @viewWidth)
 
   no_stroke: -> @should_stroke = false
   no_fill: -> @should_fill = false
@@ -101,11 +91,7 @@ class window.CanvasHelper
     @clear()
     time = Date.now()
     @last_time = time if not @last_time
-
-    @save()
-    @context.scale(@scale, @scale)
     @render_callback time - @last_time
-    @restore()
     @last_time = time
     @ticks++
     @get_animation_frame()(@step, @canvas)

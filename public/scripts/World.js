@@ -9,16 +9,14 @@
     World.prototype.camera = new SAT.Vector();
 
     function World(helper, options) {
-      var init_mouse, mouse_dx,
+      var init_mouse, mouse, mouse_dx,
         _this = this;
       this.helper = helper;
       this.options = options;
-      this.helper.viewWidth = this.options.viewWidth;
-      this.helper.viewHeight = this.options.viewHeight;
-      this.helper.resize();
       this.background = new CompositeBackground(this.options.backgrounds);
       this.reset_game();
       this.translation = new SAT.Vector();
+      mouse = new SAT.Vector();
       init_mouse = new SAT.Vector();
       mouse_dx = null;
       $('#replay').on('click', function(e) {
@@ -26,14 +24,11 @@
         return _this.reset_game();
       });
       $(this.helper.canvas).on('mousedown', function(e) {
-        var mouse;
         if (!_this.current_target) {
           return;
         }
-        mouse = new SAT.Vector(e.clientX, e.clientY);
-        mouse.scale(1 / _this.helper.scale);
-        mouse.add(_this.camera);
-        init_mouse = new SAT.Vector().copy(mouse);
+        init_mouse.x = mouse.x = e.clientX + _this.camera.x;
+        init_mouse.y = mouse.y = e.clientY + _this.camera.y;
         _this.is_dragging = _this.current_target.contains(mouse);
         if (_this.is_dragging) {
           _this.bee.thinking = null;
@@ -61,13 +56,11 @@
         }
       });
       $(this.helper.canvas).on('mousemove', function(e) {
-        var mouse;
         if (!_this.is_dragging) {
           return;
         }
-        mouse = new SAT.Vector(e.clientX, e.clientY);
-        mouse.scale(1 / _this.helper.scale);
-        mouse.add(_this.camera);
+        mouse.x = e.clientX + _this.camera.x;
+        mouse.y = e.clientY + _this.camera.y;
         mouse_dx = new SAT.Vector().copy(mouse).sub(init_mouse);
         _this.current_target.drag_position = mouse;
         _this.current_target.drag_dx = mouse_dx;
@@ -75,15 +68,10 @@
       });
       $(this.helper.canvas).on('mouseleave', function(e) {
         _this.is_dragging = false;
-        if (_this.current_target) {
-          _this.current_target.drag_position = null;
-          _this.current_target.drag_dx = null;
-        }
+        _this.current_target.drag_position = null;
+        _this.current_target.drag_dx = null;
         _this.bee.drag_dx = null;
         return _this.bee.distance = 0;
-      });
-      $(window).on('resize', function(e) {
-        return _this.helper.resize(window.innerWidth, window.innerHeight);
       });
     }
 
@@ -128,6 +116,11 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         background = _ref[_i];
         background.x += (this.bee.last_position.x - this.bee.position.x) * background.increment;
+        if (background.x < 0) {
+          background.x += background.width;
+        } else if (background.x + background.width > helper.width) {
+          background.x -= background.width;
+        }
       }
       if (this.bee.position.y > this.options.height) {
         return this.reset_game();
@@ -223,7 +216,7 @@
         this.time += dt;
       }
       this.update(helper);
-      this.position_camera(helper);
+      this.position_camera();
       this.background.render(helper);
       this.helper.save();
       this.helper.translate(-this.camera.x, -this.camera.y);
@@ -239,21 +232,20 @@
       return helper.text("lives: " + this.bee.lives, 32, helper.height - 32, font = '28px "Sniglet", cursive', null, 'left', 'middle');
     };
 
-    World.prototype.position_camera = function(helper) {
-      var dest, view;
-      view = (new SAT.Vector(helper.width, helper.height)).scale(1 / helper.scale);
-      dest = (new SAT.Vector()).copy(this.bee.position).sub((new SAT.Vector()).copy(view).scale(1 / 2));
+    World.prototype.position_camera = function() {
+      var dest;
+      dest = (new SAT.Vector()).copy(this.bee.position).sub(new SAT.Vector(this.helper.width / 2, this.helper.height / 2));
       if (dest.x < 0) {
         dest.x = 0;
       }
       if (dest.y < 0) {
         dest.y = 0;
       }
-      if (dest.x + view.x > this.options.width) {
-        dest.x = this.options.width - view.x;
+      if (dest.x + this.helper.width > this.options.width) {
+        dest.x = this.options.width - this.helper.width;
       }
-      if (dest.y + view.y > this.options.height) {
-        dest.y = this.options.height - view.y;
+      if (dest.y + this.helper.height > this.options.height) {
+        dest.y = this.options.height - this.helper.height;
       }
       return this.camera = dest;
     };
