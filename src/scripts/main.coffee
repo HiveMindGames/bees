@@ -74,9 +74,9 @@ for i in [0..target_count]
     src: 'images/petals.png',
     width: 128,
     height: 64,
-    position: new SAT.Vector((helper.half_width * i) + 200, helper.height),
-    stem_height: 220,
-    angle: if i is 0 then 10 else Math.floor(25 - (Math.random() * 50))
+    position: new SAT.Vector(((helper.half_width / 2) * i) + 200, helper.height),
+    stem_height: helper.half_height / 2,
+    angle: if i is 0 then 10 else Math.floor(15 - (Math.random() * 30))
     final: i is target_count
   })
 
@@ -85,8 +85,8 @@ world = new World(helper, {
   height: helper.height
   bee: {
     src: 'images/bee.png',
-    x: 248,
-    y: helper.height - 272
+    x: 256,
+    y: (helper.half_height * 1.5) - 48
     width: 64
     height: 74
   },
