@@ -3,28 +3,20 @@
   window.World = (function() {
 
     function World(helper, options) {
-      var init_mouse, is_dragging, mouse, mouse_dx, option,
+      var init_mouse, is_dragging, mouse, mouse_dx,
         _this = this;
       this.helper = helper;
       this.options = options;
       this.background = new Background(this.options.backgrounds);
-      this.bee = new Bee(this.options.bee);
-      this.flowers = (function() {
-        var _i, _len, _ref, _results;
-        _ref = this.options.flowers;
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          option = _ref[_i];
-          _results.push(new Flower(option));
-        }
-        return _results;
-      }).call(this);
-      this.current_flower = this.flowers[0];
+      this.new_game();
       mouse = new SAT.Vector();
       init_mouse = new SAT.Vector();
       is_dragging = false;
       mouse_dx = null;
       $(this.helper.canvas).on('mousedown', function(e) {
+        if (!_this.current_flower) {
+          return;
+        }
         init_mouse.x = mouse.x = e.clientX;
         init_mouse.y = mouse.y = e.clientY;
         return is_dragging = _this.current_flower.contains(mouse);
@@ -54,6 +46,27 @@
         return _this.bee.drag_dx = mouse_dx;
       });
     }
+
+    World.prototype.new_game = function() {
+      var background, option, _i, _len, _ref;
+      _ref = this.options.backgrounds;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        background = _ref[_i];
+        background.x = 0;
+      }
+      this.bee = new Bee(this.options.bee);
+      this.flowers = (function() {
+        var _j, _len1, _ref1, _results;
+        _ref1 = this.options.flowers;
+        _results = [];
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          option = _ref1[_j];
+          _results.push(new Flower(option));
+        }
+        return _results;
+      }).call(this);
+      return this.current_flower = this.flowers[0];
+    };
 
     World.prototype.update = function(helper) {
       var background, collision_response, offset, _i, _len, _ref,
@@ -85,7 +98,10 @@
         this.bee.is_flying = false;
         offset = (new SAT.Vector()).copy(collision_response.overlapV).reverse();
         this.bee.position.add(offset);
-        return this.bee.velocity.add(offset);
+        this.bee.velocity.add(offset);
+      }
+      if (this.bee.position.y > this.helper.height) {
+        return this.new_game();
       }
     };
 
