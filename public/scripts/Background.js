@@ -11,11 +11,16 @@
     }
 
     Background.prototype.render = function(helper) {
-      this.y = helper.height - this.height;
+      if (this.x < 0) {
+        this.x += this.width;
+      }
+      if (this.x >= this.width) {
+        this.x -= this.width;
+      }
       if (this.repeat) {
         this.pattern = helper.context.createPattern(this.image, 'repeat-x');
         helper.fill(this.pattern);
-        return helper.rect(helper.half_width, helper.half_height);
+        return helper.rect(helper.half_width / helper.scale, helper.half_height / helper.scale, helper.width / helper.scale, helper.height / helper.scale);
       } else {
         helper.render_image(this.image, this.x - this.width, this.y, this.width, this.height);
         helper.render_image(this.image, this.x, this.y, this.width, this.height);
