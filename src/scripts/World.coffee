@@ -19,10 +19,14 @@ class window.World
       e.preventDefault()
       @reset_game()
 
-    $(@helper.canvas).on 'mousedown', (e) =>
+    $(@helper.canvas).on 'mousedown touchstart', (e) =>
+      e.preventDefault()
       return unless @current_target
 
-      mouse = new SAT.Vector(e.clientX, e.clientY)
+      mouse = if e.type == 'touchstart'
+        new SAT.Vector(e.touches[0].clientX, e.touches[0].clientY)
+      else
+        new SAT.Vector(e.clientX, e.clientY)
 
       mouse.scale 1/@helper.scale
       mouse.add(@camera)
@@ -35,7 +39,8 @@ class window.World
         @bee.thinking = null
         soundManager.play('stretch')
 
-    $(@helper.canvas).on 'mouseup', (e) =>
+    $(@helper.canvas).on 'mouseup touchend', (e) =>
+      e.preventDefault()
       return unless @is_dragging
 
       soundManager.play('buzz', loops: 3)
@@ -50,10 +55,14 @@ class window.World
       @bee.distance = 0
       @bee.velocity.sub((new SAT.Vector()).copy(mouse_dx).scale(4)) if mouse_dx
 
-    $(@helper.canvas).on 'mousemove', (e) =>
+    $(@helper.canvas).on 'mousemove touchmove', (e) =>
+      e.preventDefault()
       return unless @is_dragging
 
-      mouse = new SAT.Vector(e.clientX, e.clientY)
+      mouse = if e.type == 'touchmove'
+        new SAT.Vector(e.touches[0].clientX, e.touches[0].clientY)
+      else
+        new SAT.Vector(e.clientX, e.clientY)
 
       mouse.scale 1/@helper.scale
       mouse.add(@camera)
