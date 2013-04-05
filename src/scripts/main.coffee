@@ -3,12 +3,17 @@ soundManager.setup
   flashVersion: 9
   useFlashBlock: false
   onready: ->
-    soundManager.createSound
+    background = soundManager.createSound
       id: 'background'
       url: './sounds/background.mp3'
       autoLoad: true
-      autoPlay: true
+      autoPlay: false
       volume: 10
+    loopBackground = ->
+      background.play
+        onfinish: -> loopBackground()
+    loopBackground()
+
     soundManager.createSound
       id: 'bounce1'
       url: './sounds/bounce1.mp3'
