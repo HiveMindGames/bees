@@ -6,13 +6,22 @@
     flashVersion: 9,
     useFlashBlock: false,
     onready: function() {
-      soundManager.createSound({
+      var background, loopBackground;
+      background = soundManager.createSound({
         id: 'background',
         url: './sounds/background.mp3',
         autoLoad: true,
-        autoPlay: true,
+        autoPlay: false,
         volume: 10
       });
+      loopBackground = function() {
+        return background.play({
+          onfinish: function() {
+            return loopBackground();
+          }
+        });
+      };
+      loopBackground();
       soundManager.createSound({
         id: 'bounce1',
         url: './sounds/bounce1.mp3',

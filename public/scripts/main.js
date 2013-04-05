@@ -15,7 +15,6 @@
         volume: 10
       });
       loopBackground = function() {
-        console.log('looping');
         return background.play({
           onfinish: function() {
             return loopBackground();
