@@ -12,7 +12,7 @@ Bouncy Bee
 * Adam Rickert [@AdamRickert](http://twitter.com/AdamRickert)
 
 ### Engineering
-* Jim Fleming [@Ikaros_Daedalos](http://twitter.com/ikaros_daedalos)
+* Jim Fleming [@jimmfleming](http://twitter.com/jimmfleming)
 * Logan Smyth [@LoganFSmyth](https://twitter.com/loganfsmyth)
 * Danielle Swank [@DanielleSwank](https://twitter.com/danielleswank)
 
